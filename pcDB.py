@@ -7,13 +7,40 @@ class pcDB:
         self.c = self.conn.cursor()
 
 
-    def search(self, table, col, val):
+    def searchParts(self, val):
+        query = """
+            SELECT id FROM parts WHERE
+            barcode = ?
+            OR name LIKE ?
+            OR mfr LIKE ?
+            OR model LIKE ?
+            OR notes LIKE ?
+        """
         vallike = '%{}%'.format(val)
-        self.c.execute('select ? from ? where ? like ?',
-                       (col, table, col, vallike)
-                       )
+        result = self.c.execute(query, (
+            val,
+            vallike,
+            vallike,
+            vallike,
+            vallike,
+        )).fetchall()
 
-        return self.c.fetchall()
+        result = [i[0] for i in result]
+
+        return result
+
+
+    def getPart(self, id):
+        query = """
+            SELECT parts.*, sum(qtyChange) as qty
+            FROM parts 
+            LEFT OUTER JOIN qtyChanges 
+            ON parts.id = qtyChanges.part
+            WHERE parts.id = ?
+        """
+        id = int(id)
+        return self.c.execute(query, (id,)).fetchone()
+
 
     def addPart(self, partDict):
         cols = ', '.join(partDict.keys())
@@ -38,20 +65,19 @@ class pcDB:
     def changeQty(self, id, change, user=1, notes=''):
         argDict = {
             'user': user,
-            'timestamp': 'datetime(now)',
             'part': id,
             'qtychange': change,
             'notes': notes,
         }
         cols = ', '.join(argDict.keys())
-        qmarks = ', '.join(['?'] * len(partDict))
-        query = 'INSERT INTO qtyChanges ({}) VALUES ({})'.format(cols, qmarks)
+        qmarks = ', '.join(['?'] * len(argDict))
+        query = "INSERT INTO qtyChanges (timestamp, {}) VALUES (datetime('now'), {})".format(cols, qmarks)
 
         self.c.execute(query, list(argDict.values()))
         self.conn.commit()
 
     def getQty(self, id):
-        query = 'SELECT sum(qty) FROM qtyChanges WHERE part = ?'
+        query = 'SELECT sum(qtychange) FROM qtyChanges WHERE part = ?'
 
         result = self.c.execute(query, (id,)).fetchone()
         return result[0]
@@ -60,5 +86,9 @@ class pcDB:
         pass
 
 
-    def getLinkedParts(self, part):
+    def getLinkedParts(self, id):
         pass
+
+
+# a = pcDB()
+# print(a.getQty(3))
