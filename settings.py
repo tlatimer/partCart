@@ -7,7 +7,8 @@ displayNames = {
     'sellprice': 'Sell Price',
     'cost': 'Cost',
     'notes': 'Notes',
-    'name': 'Cross Ref',
+    'qty': 'Qty',
+    'name': 'CrossRef',
     'timestamp': 'Last Sold',
 }
 
@@ -17,9 +18,10 @@ searchCols = [
     'desc',
     'vendor',
     'partnum',
-    'location',
     'name',
+    'location',
+    'qty',
     'timestamp',
 ]
 
-showPartsHeader = ['[#]'] + [displayNames[i] for i in searchCols]
+findPartsHeader = ['[#]'] + [displayNames[i] for i in searchCols]

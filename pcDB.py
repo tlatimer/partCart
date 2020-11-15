@@ -22,12 +22,12 @@ class pcDB:
             ON parts.id = qtyChanges.part
             LEFT OUTER JOIN crossref
             on parts.crossref = crossref.id
-            GROUP BY parts.id
             WHERE {}
+            GROUP BY parts.id
             ORDER BY timestamp DESC"""
 
         if id:
-            whereClause = "id = ?"
+            whereClause = "parts.id = ?"
             q = query.format(whereClause)
 
             return self.c.execute(q, (id,)).fetchone()
@@ -40,7 +40,13 @@ class pcDB:
                 return result
 
             # didn't find it by barcode, now search for text
-            colsToSearch = ['desc', 'partnum', 'location', 'notes', 'name']
+            colsToSearch = [
+                'desc',
+                'partnum',
+                'location',
+                # 'parts.notes',
+                'name'
+            ]
             whereClause = ' OR '.join(['%s LIKE ?' % i for i in colsToSearch])
             searchVals = ['%{}%'.format(search)] * len(colsToSearch)
 
