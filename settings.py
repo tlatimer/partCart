@@ -7,18 +7,19 @@ displayNames = {
     'sellprice': 'Sell Price',
     'cost': 'Cost',
     'notes': 'Notes',
-    'group': 'Group',
+    'name': 'Cross Ref',
+    'timestamp': 'Last Sold',
 }
+
+partCols = list(displayNames.keys())
 
 searchCols = [
     'desc',
     'vendor',
     'partnum',
     'location',
-    'group',
+    'name',
+    'timestamp',
 ]
-
-partCols = list(displayNames.keys())
-partCols.remove('group')
 
 showPartsHeader = ['[#]'] + [displayNames[i] for i in searchCols]
