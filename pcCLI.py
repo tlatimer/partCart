@@ -1,24 +1,16 @@
 import pcDB
 from tabulate import tabulate
+import settings as s
+import termcolor
 
-fields = [
-            'name',
-            'mfr',
-            'model',
-            'qty',
-            'cost',
-            'price',
-            'notes',
-        ]
 
 def main():
     p = pcCLI()
+    p.mainMenu()
     # p.showParts([1,2])
 
     # a = p.findParts()
     # print('id: {}'.format(a))
-
-    p.mainMenu()
 
 
 class pcCLI():
@@ -28,42 +20,65 @@ class pcCLI():
     def mainMenu(self):
         while True:
             print("""
+======= MAIN MENU =======       
     1. [F]ind parts
     2. [M]ass change quantity
-    3. [N]ew part
-            """)
+    3. [C]hange parts
+    4. [I]nventory""")
             choice = input('?')
 
+            choice = choice[:1].lower()
             if choice == '':
+                # didn't press anything...?
                 continue
-
-            choice = choice[0].lower()
-            if choice in ['1', 'f']:
+            elif choice in ['1', 'f']:
                 myPart = self.findParts()
                 if myPart == None:
                     continue
                 self.showPart(myPart)
             elif choice in ['2', 'm']:
-                # TODO
                 print('not implemented yet')
                 continue
-            elif choice in ['3', 'n']:
-                # TODO
+            elif choice in ['3', 'c']:
+                print('not implemented yet')
+                continue
+            elif choice in ['4', 'i']:
                 print('not implemented yet')
                 continue
 
+    def partMenu(self, id):
+        print("""
+======= PART MENU =======
+    1. See [L]inked parts
+    2. [S]ell quantity
+    3. Link part to [G]roup
+    4. [B]ack to Main Menu""")
+        choice = input('?')
 
+        choice = choice[:1].lower()
+        while True:
+            if choice in ['', '4', 'b']:
+                return
+            elif choice in ['1', 'l']:
+                print('not implemented yet')
+                continue
+            elif choice in ['2', 's']:
+                print('not implemented yet')
+                continue
+            elif choice in ['3', 'g']:
+                print('not implemented yet')
+                continue
 
     def findParts(self):
-        toSearch = input('Search Term?')
+        toSearch = input('Search for?')
 
         if not toSearch:
             return None
 
         ids = self.db.searchParts(toSearch)
 
-        choices = self.showParts(ids)
-        choice = input('Which Part [#] (or blank to cancel)?')
+        choices = self.showParts(ids, toSearch)
+        choice = input('Which Part [#]?')
 
         try:
             if not choice:
@@ -74,73 +89,41 @@ class pcCLI():
             print('Invalid Choice!')
             return None
 
-
     def showPart(self, id):
         part = self.db.getPart(id)
 
 
         print('\n')
-        for f in fields:
-            if part[f]:
-                print('{:>5}: {}'.format(f, part[f]))
+        for col in s.partCols:
+            if part[col]:
+                print('{:>11}: {}'.format(s.displayNames[col], part[col]))
             else:
-                print('{:>5}:'.format(f))
+                print('{:>11}:'.format(s.displayNames[col]))
 
         self.partMenu(id)
 
-    def partMenu(self, id):
-        print("""
-    1. Adjust [q]uantity
-    2. [E]dit part
-    3. See [L]inked parts
-    4. Link part to [g]roup
-    5. [B]ack
-                    """)
-        choice = input('?')
 
-        choice = choice[0].lower()
-        while True:
-            if choice in ['', '5', 'b']:
-                return
-            elif choice in ['1', 'q']:
-                # TODO
-                print('not implemented yet')
-                continue
-            elif choice in ['2', 'e']:
-                # TODO
-                print('not implemented yet')
-                continue
-            elif choice in ['3', 'l']:
-                # TODO
-                print('not implemented yet')
-                continue
-            elif choice in ['4', 'g']:
-                # TODO
-                print('not implemented yet')
-                continue
-
-    def showParts(self, ids):
+    def showParts(self, ids, searchTerm):
         parts = []
         for id in ids:
             parts.append(self.db.getPart(id))
-
-        header = fields[:-1]
 
         toReturn = {}
         table=[]
         for i, part in enumerate(parts):
             i += 1
             toReturn[i] = part['id']
-            partRow = ['{}: '.format(i)]
-            for h in header:
-                partRow.append(part[h])
+            partRow = ['{}:'.format(i)]
+            for col in s.searchCols:
+                toAdd = str(part[col]).replace(searchTerm, termcolor.colored(searchTerm, 'yellow'))
+                partRow.append(toAdd)
             table.append(partRow)
 
-        header = ['[#]'] + header
-
-        print(tabulate(table, headers=header, tablefmt='github'))
+        print(tabulate(table, headers=s.showPartsHeader, tablefmt='github'))
 
         return toReturn
 
 
-main()
+# main()
+p = pcCLI()
+p.mainMenu()

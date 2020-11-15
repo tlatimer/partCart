@@ -10,16 +10,13 @@ class pcDB:
     def searchParts(self, val):
         query = """
             SELECT id FROM parts WHERE
-            barcode = ?
-            OR name LIKE ?
-            OR mfr LIKE ?
-            OR model LIKE ?
+            OR desc LIKE ?
+            OR partnum LIKE ?
             OR notes LIKE ?
         """
         vallike = '%{}%'.format(val)
         result = self.c.execute(query, (
             val,
-            vallike,
             vallike,
             vallike,
             vallike,
@@ -62,9 +59,8 @@ class pcDB:
         self.c.execute(query, args)
         self.conn.commit()
 
-    def changeQty(self, id, change, user=1, notes=''):
+    def changeQty(self, id, change, notes=''):
         argDict = {
-            'user': user,
             'part': id,
             'qtychange': change,
             'notes': notes,
@@ -76,11 +72,6 @@ class pcDB:
         self.c.execute(query, list(argDict.values()))
         self.conn.commit()
 
-    def getQty(self, id):
-        query = 'SELECT sum(qtychange) FROM qtyChanges WHERE part = ?'
-
-        result = self.c.execute(query, (id,)).fetchone()
-        return result[0]
 
     def linkParts(self, id1, id2):
         pass
