@@ -89,7 +89,12 @@ class pcCLI:
             while True:
                 choice = input('Which Part [#]?')
                 try:
-                    return choices[int(choice)]
+                    if choice.lower() == 'f':
+                        return self.findParts()
+                    elif choice.lower() == '':
+                        return None
+                    else:
+                        return choices[int(choice)]
                 except:
                     print('Invalid choice! try again')
 
