@@ -35,4 +35,11 @@ searchCols = [
     'timestamp',
 ]
 
+colsToSearch = [
+                'desc',
+                'partnum',
+                'name',
+                'location',
+]
+
 findPartsHeader = ['[#]'] + [displayNames[i] for i in searchCols]

@@ -19,7 +19,7 @@ class pcCLI:
 ======= MAIN MENU =======       
     1. [F]ind parts
     2. [M]ass change quantity
-    3. [C]hange parts
+    3. [N]ew Part
     4. [I]nventory""")
             choice = input('?')
 
@@ -29,10 +29,11 @@ class pcCLI:
                 if myPart is None:
                     continue
                 self.showPart(myPart)
+
             elif choice in ['2', 'm']:
                 print('not implemented yet')
-            elif choice in ['3', 'c']:
-                print('not implemented yet')
+            elif choice in ['3', 'n']:
+                self.updatePartFlow()
             elif choice in ['4', 'i']:
                 print('not implemented yet')
 
@@ -52,9 +53,9 @@ class pcCLI:
             elif choice in ['1', 'l']:
                 print('not implemented yet')
             elif choice in ['2', 's']:
-                print('not implemented yet')
-            elif choice in ['3', 'g']:
-                print('not implemented yet')
+                self.sellQty(part)
+            elif choice in ['3', 'e']:
+                self.editPartMenu(part)
 
     def editPartMenu(self, part):
         print(
@@ -72,7 +73,7 @@ class pcCLI:
             elif choice in ['1', 'g']:
                 print('not implemented yet')
             elif choice in ['2', 'e']:
-                print('not implemented yet')
+                self.updatePartFlow(part)
             elif choice in ['3', 'd']:
                 print('not implemented yet')
 
@@ -87,7 +88,7 @@ class pcCLI:
         if len(rows) > 1:
             choices = self.showSearch(rows, toSearch)
             while True:
-                choice = input('Which Part [#]?')
+                choice = input('{:>11}?'.format('Which Part [#]'))
                 try:
                     if choice.lower() == 'f':
                         return self.findParts()
@@ -127,7 +128,7 @@ class pcCLI:
                 if toAdd == 'None':
                     partRow.append('')
                     continue
-                if col != 'vendor':
+                if col in s.colsToSearch:
                     toAdd = toAdd.replace(searchTerm, colored(searchTerm, 'yellow'))
                 partRow.append(toAdd)
             table.append(partRow)
@@ -151,18 +152,39 @@ class pcCLI:
             if col in data:
                 print('{:>11}: {}'.format(s.displayNames[col], prevData[col]))
                 newVal = input(' '*11 + '?')
+                if newVal != '':
+                    data[col] = i
             else:
-                newVal = input('{:>11}?'.format(s.displayNames[col]))
+                data[col] = input('{:>11}?'.format(s.displayNames[col]))
+
 
         if 'id' in data:
-            action = 'update'
+            # action = 'update'
+            self.db.updatePart(id=data['id'], partDict=data)
         else:
-            action = 'insert'
+            # action = 'insert'
+            self.db.insertPart(partDict=data)
+
+    def sellQty(self, part):
+        while True:
+            qty = input('{:>11}?'.format('Qty'))
+
+            if qty == '':
+                return
+
+            try:
+                qty = int(qty)
+                notes = input('{:>11}?'.format('Notes'))
+                self.db.changeQty(part['id'], -qty, notes)
+
+                return
+
+            except:
+                "Invalid quantity"
+
 
 
 
 # main()
 p = pcCLI()
-# p.mainMenu()
-# p.updatePartFlow()
-p.updatePartFlow(p.db.selectParts(id=1))
+p.mainMenu()

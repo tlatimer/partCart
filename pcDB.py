@@ -40,15 +40,8 @@ class pcDB:
                 return result
 
             # didn't find it by barcode, now search for text
-            colsToSearch = [
-                'desc',
-                'partnum',
-                'location',
-                # 'parts.notes',
-                'name'
-            ]
-            whereClause = ' OR '.join(['%s LIKE ?' % i for i in colsToSearch])
-            searchVals = ['%{}%'.format(search)] * len(colsToSearch)
+            whereClause = ' OR '.join(['%s LIKE ?' % i for i in s.colsToSearch])
+            searchVals = ['%{}%'.format(search)] * len(s.colsToSearch)
 
             q = query.format(whereClause)
             return self.c.execute(q, searchVals).fetchall()
@@ -89,6 +82,9 @@ class pcDB:
         self.conn.commit()
 
     def updatePart(self, id, partDict):
+        if 'id' in partDict:
+            del(partDict['id'])
+
         setCols = []
         for k in partDict.keys():
             setCols.append('{} = ?'.format(k))
