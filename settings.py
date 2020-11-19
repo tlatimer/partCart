@@ -12,7 +12,18 @@ displayNames = {
     'timestamp': 'Last Sold',
 }
 
-partCols = list(displayNames.keys())
+allPartCols = list(displayNames.keys())
+
+updateCols = {
+    'desc': 'Description',
+    'vendor': 'Vendor',
+    'partnum': 'Part Num',
+    'location': 'Location',
+    'barcode': 'Barcode',
+    'sellprice': 'Sell Price',
+    'cost': 'Cost',
+    'notes': 'Notes',
+}
 
 searchCols = [
     'desc',

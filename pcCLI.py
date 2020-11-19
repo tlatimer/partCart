@@ -1,7 +1,7 @@
 import pcDB
 from tabulate import tabulate
 import settings as s
-import termcolor
+from termcolor import colored
 
 
 def main():
@@ -99,7 +99,7 @@ class pcCLI:
                     print('Invalid choice! try again')
 
         elif len(rows) == 1:
-            message = termcolor.colored("Only 1 part was found", 'yellow')
+            message = colored("Only 1 part was found", 'yellow')
             print(message)
             return rows[0]
         else:
@@ -107,7 +107,7 @@ class pcCLI:
 
     def showPart(self, part):
         print('\n======= PART DATA =======')
-        for col in s.partCols:
+        for col in s.allPartCols:
             if part[col]:
                 print('{:>11}: {}'.format(s.displayNames[col], part[col]))
             else:
@@ -128,7 +128,7 @@ class pcCLI:
                     partRow.append('')
                     continue
                 if col != 'vendor':
-                    toAdd = toAdd.replace(searchTerm, termcolor.colored(searchTerm, 'yellow'))
+                    toAdd = toAdd.replace(searchTerm, colored(searchTerm, 'yellow'))
                 partRow.append(toAdd)
             table.append(partRow)
 
@@ -136,7 +136,33 @@ class pcCLI:
 
         return toReturn
 
+    def updatePartFlow(self, prevData=None):
+        if prevData is None:
+            data = dict()
+        else:
+            data = dict(prevData)
+
+        for k in [*data.keys()]:
+            if data[k] in [None, '']:
+                del(data[k])
+
+        print(colored('Press [Enter] to leave unchanged or blank.', 'yellow'))
+        for col in s.updateCols:
+            if col in data:
+                print('{:>11}: {}'.format(s.displayNames[col], prevData[col]))
+                newVal = input(' '*11 + '?')
+            else:
+                newVal = input('{:>11}?'.format(s.displayNames[col]))
+
+        if 'id' in data:
+            action = 'update'
+        else:
+            action = 'insert'
+
+
 
 # main()
 p = pcCLI()
-p.mainMenu()
+# p.mainMenu()
+# p.updatePartFlow()
+p.updatePartFlow(p.db.selectParts(id=1))
