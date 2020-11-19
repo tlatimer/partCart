@@ -31,11 +31,11 @@ class pcCLI:
                 self.showPart(myPart)
 
             elif choice in ['2', 'm']:
-                print('not implemented yet')
+                self.massQtyChange()
             elif choice in ['3', 'n']:
                 self.updatePartFlow()
             elif choice in ['4', 'i']:
-                print('not implemented yet')
+                print('not implemented yet')  # TODO
 
     def partMenu(self, part):
         print(
@@ -51,7 +51,7 @@ class pcCLI:
             if choice in ['', '4', 'b']:
                 return
             elif choice in ['1', 'l']:
-                print('not implemented yet')
+                print('not implemented yet')  # TODO
             elif choice in ['2', 's']:
                 self.sellQty(part)
             elif choice in ['3', 'e']:
@@ -71,14 +71,15 @@ class pcCLI:
             if choice in ['', '4', 'b']:
                 return
             elif choice in ['1', 'g']:
-                print('not implemented yet')
+                print('not implemented yet')  # TODO
             elif choice in ['2', 'e']:
                 self.updatePartFlow(part)
+                return
             elif choice in ['3', 'd']:
-                print('not implemented yet')
+                print('not implemented yet')  # TODO
 
     def findParts(self):
-        toSearch = input('Search for?')
+        toSearch = input('{:>14}?'.format('Search for'))
 
         if not toSearch:
             return None
@@ -88,7 +89,7 @@ class pcCLI:
         if len(rows) > 1:
             choices = self.showSearch(rows, toSearch)
             while True:
-                choice = input('{:>11}?'.format('Which Part [#]'))
+                choice = input('{:>14}?'.format('Which Part [#]'))
                 try:
                     if choice.lower() == 'f':
                         return self.findParts()
@@ -110,9 +111,9 @@ class pcCLI:
         print('\n======= PART DATA =======')
         for col in s.allPartCols:
             if part[col]:
-                print('{:>11}: {}'.format(s.displayNames[col], part[col]))
+                print('{:>14}: {}'.format(s.displayNames[col], part[col]))
             else:
-                print('{:>11}:'.format(s.displayNames[col]))
+                print('{:>14}:'.format(s.displayNames[col]))
 
         self.partMenu(part)
 
@@ -150,12 +151,12 @@ class pcCLI:
         print(colored('Press [Enter] to leave unchanged or blank.', 'yellow'))
         for col in s.updateCols:
             if col in data:
-                print('{:>11}: {}'.format(s.displayNames[col], prevData[col]))
-                newVal = input(' '*11 + '?')
+                print('{:>14}: {}'.format(s.displayNames[col], prevData[col]))
+                newVal = input(' '*14 + '?')
                 if newVal != '':
                     data[col] = i
             else:
-                data[col] = input('{:>11}?'.format(s.displayNames[col]))
+                data[col] = input('{:>14}?'.format(s.displayNames[col]))
 
 
         if 'id' in data:
@@ -165,16 +166,17 @@ class pcCLI:
             # action = 'insert'
             self.db.insertPart(partDict=data)
 
-    def sellQty(self, part):
+    def sellQty(self, part, notes=None):
         while True:
-            qty = input('{:>11}?'.format('Qty'))
+            qty = input('{:>14}?'.format('Qty'))
 
             if qty == '':
                 return
 
             try:
                 qty = int(qty)
-                notes = input('{:>11}?'.format('Notes'))
+                if notes is None:
+                    notes = input('{:>14}?'.format('Notes'))
                 self.db.changeQty(part['id'], -qty, notes)
 
                 return
@@ -182,7 +184,13 @@ class pcCLI:
             except:
                 "Invalid quantity"
 
-
+    def massQtyChange(self):
+        print(colored('Press [Enter] to return to main menu.', 'yellow'))
+        while True:
+            myPart = self.findParts()
+            if myPart is None:
+                return
+            self.sellQty(myPart, 'mass')
 
 
 # main()
