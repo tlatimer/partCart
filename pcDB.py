@@ -8,7 +8,7 @@ class pcDB:
         self.conn.row_factory = sqlite3.Row
         self.c = self.conn.cursor()
 
-    def selectParts(self, id=None, search=None):
+    def selectParts(self, id=None, search=None, crossref=None):
         query = """
             SELECT
     
@@ -31,6 +31,7 @@ class pcDB:
             q = query.format(whereClause)
 
             return self.c.execute(q, (id,)).fetchone()
+
         elif search:
             whereClause = 'barcode = ?'
             q = query.format(whereClause)
@@ -46,32 +47,15 @@ class pcDB:
             q = query.format(whereClause)
             return self.c.execute(q, searchVals).fetchall()
 
-    # def searchParts(self, val):
-    #     # asdf: return 1 where barcode = ?
-    #     query = """
-    #         SELECT id FROM parts WHERE
-    #         OR desc LIKE ?
-    #         OR partnum LIKE ?
-    #         OR notes LIKE ?
-    #     """
-    #     # asdf: order by qtychanges.timestamp desc
-    #     vallike = '%{}%'.format(val)
-    #     result = self.c.execute(query, [vallike]*3).fetchall()
-    #
-    #     ids = [i[0] for i in result]
-    #
-    #     return ids
-    #
-    # def getPart(self, id):
-    #     query = """
-    #         SELECT parts.*, sum(qtyChange) as qty, max(timestamp) as timestamp
-    #         FROM parts
-    #         LEFT OUTER JOIN qtyChanges
-    #         ON parts.id = qtyChanges.part
-    #         WHERE parts.id = ?
-    #     """
-    #     id = int(id)
-    #     return self.c.execute(query, (id,)).fetchone()
+        elif crossref:
+            whereClause = "crossref = ?"
+            q = query.format(whereClause)
+
+            return self.c.execute(q, (crossref,)).fetchall()
+
+        else:
+            # how did you get here?
+            raise theRoof
 
     def insertPart(self, partDict):
         cols = ', '.join(partDict.keys())
@@ -95,8 +79,8 @@ class pcDB:
         self.c.execute(query, args)
         self.conn.commit()
 
-    def deletePart(self, id):
-        pass  # TODO
+    def deletePart(self, id):  # TODO
+        pass
 
     def changeQty(self, id, change, notes=''):
         argDict = {
@@ -116,13 +100,3 @@ class pcDB:
         self.c.execute(query, (name,))
         self.conn.commit()
         return self.c.lastrowid
-
-    def linkParts(self, id1, id2):
-        pass  # TODO
-
-    def getLinkedParts(self, id):
-        pass  # TODO
-
-
-# a = pcDB()
-# print(a.getQty(3))

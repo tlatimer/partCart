@@ -1,13 +1,10 @@
 import pcDB
 from tabulate import tabulate
 import settings as s
-from termcolor import colored
 
-
-def main():
-    # TODO: bring main() up from bottom of file
-    pass
-
+# from termcolor import colored
+def colored(str, color):
+    return str
 
 class pcCLI:
     def __init__(self):
@@ -28,55 +25,66 @@ class pcCLI:
                 myPart = self.findParts()
                 if myPart is None:
                     continue
-                self.showPart(myPart)
+                self.partMenu(myPart)
 
             elif choice in ['2', 'm']:
                 self.massQtyChange()
             elif choice in ['3', 'n']:
                 self.updatePartFlow()
             elif choice in ['4', 'i']:
-                print('not implemented yet')  # TODO
+                print('inventory not implemented yet')  # TODO
 
     def partMenu(self, part):
-        print(
-"""======= PART MENU =======
+        showPart = True
+        while True:
+            if showPart:
+                self.showPart(part)
+            else:
+                showPart = True
+
+            print(
+                """======= PART MENU =======
     1. See [L]inked parts
     2. [S]ell quantity
     3. [E]dit part
     4. [B]ack to Main Menu""")
-        choice = input('?')
+            choice = input('?')
+            choice = choice[:1].lower()
 
-        choice = choice[:1].lower()
-        while True:
             if choice in ['', '4', 'b']:
                 return
             elif choice in ['1', 'l']:
-                print('not implemented yet')  # TODO
+                parts = self.db.selectParts(crossref=part['crossref'])
+                self.showSearch(parts)
+                showPart = False
             elif choice in ['2', 's']:
                 self.sellQty(part)
             elif choice in ['3', 'e']:
-                self.editPartMenu(part)
+                r = self.editPartMenu(part)
+                if r:  # something got returned
+                    part = r
 
     def editPartMenu(self, part):
-        print(
-"""======= EDIT MENU =======
-    1. Link part to [G]roup
+
+        while True:
+            print(
+                """======= EDIT MENU =======
+    1. Link part to [C]rossref
     2. [E]dit part fields
     3. [D]elete part
     4. [B]ack to previous menu""")
-        choice = input('?')
+            choice = input('?')
 
-        choice = choice[:1].lower()
-        while True:
+            choice = choice[:1].lower()
             if choice in ['', '4', 'b']:
                 return
-            elif choice in ['1', 'g']:
-                print('not implemented yet')  # TODO
+            elif choice in ['1', 'c']:
+                return self.linkPart(part)
             elif choice in ['2', 'e']:
                 self.updatePartFlow(part)
                 return
             elif choice in ['3', 'd']:
-                print('not implemented yet')  # TODO
+                print('delete not implemented yet')  # TODO
 
     def findParts(self):
         toSearch = input('{:>14}?'.format('Search for'))
@@ -93,19 +101,22 @@ class pcCLI:
                 try:
                     if choice.lower() == 'f':
                         return self.findParts()
-                    elif choice.lower() == '':
+                    elif choice == '':
                         return None
                     else:
                         return choices[int(choice)]
                 except:
-                    print('Invalid choice! try again')
+                    print('Invalid choice! try again.')
 
         elif len(rows) == 1:
             message = colored("Only 1 part was found", 'yellow')
             print(message)
             return rows[0]
         else:
-            pass  #TODO: 'no parts found, would you like to add a part with the barcode x'
+            i = input("No parts found. Would you like to add a part with barcode '%s' [y/N]?" % toSearch)
+            if i.lower()[:1] == 'y':
+                self.updatePartFlow({'barcode': toSearch})
+
 
     def showPart(self, part):
         print('\n======= PART DATA =======')
@@ -115,9 +126,7 @@ class pcCLI:
             else:
                 print('{:>14}:'.format(s.displayNames[col]))
 
-        self.partMenu(part)
-
-    def showSearch(self, rows, searchTerm):
+    def showSearch(self, rows, searchTerm=None):
         toReturn = {}
         table=[]
         for i, part in enumerate(rows):
@@ -129,7 +138,7 @@ class pcCLI:
                 if toAdd == 'None':
                     partRow.append('')
                     continue
-                if col in s.colsToSearch:
+                if col in s.colsToSearch and searchTerm:
                     toAdd = toAdd.replace(searchTerm, colored(searchTerm, 'yellow'))
                 partRow.append(toAdd)
             table.append(partRow)
@@ -154,7 +163,7 @@ class pcCLI:
                 print('{:>14}: {}'.format(s.displayNames[col], prevData[col]))
                 newVal = input(' '*14 + '?')
                 if newVal != '':
-                    data[col] = i
+                    data[col] = newVal
             else:
                 data[col] = input('{:>14}?'.format(s.displayNames[col]))
 
@@ -192,7 +201,31 @@ class pcCLI:
                 return
             self.sellQty(myPart, 'mass')
 
+    def linkPart(self, part):
+        if part['crossref']:
+            # part is already linked
+            i = input('Would you like to remove this Crossref [y/N]?')
+            if i.lower()[:1] == 'y':
+                self.db.updatePart(part['id'], {'crossref': None})
 
-# main()
+        else:
+            # part is not linked
+            print(colored('What part would you like to link it to?', 'yellow'))
+            part2 = self.findParts()
+            if part2 is None:
+                return
+
+            if part2['crossref']:
+                #part2 is linked, copy to part
+                self.showPart(part2)
+                i = input('Are you sure you\'d like to link to this part [y/N]?')
+                if i.lower()[:1] == 'y':
+                    self.db.updatePart(part['id'], {'crossref': part2['crossref']})
+            else:
+                # part2 is not linked; create new crossref
+                pass
+
+        return self.db.selectParts(id=part['id'])
+
 p = pcCLI()
 p.mainMenu()
