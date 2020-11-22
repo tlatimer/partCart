@@ -3,6 +3,7 @@ from tabulate import tabulate
 import settings as s
 
 # from termcolor import colored
+# stupid cmd doesn't understand colors.
 def colored(str, color):
     return str
 
