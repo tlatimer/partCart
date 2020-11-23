@@ -2,10 +2,11 @@ import pcDB
 from tabulate import tabulate
 import settings as s
 
-# from termcolor import colored
-# stupid cmd doesn't understand colors.
-def colored(str, color):
-    return str
+
+from termcolor import colored
+import os
+os.system('color')  # stupid cmd doesn't understand colors.
+
 
 class pcCLI:
     def __init__(self):
@@ -16,7 +17,7 @@ class pcCLI:
             print("""
 ======= MAIN MENU =======       
     1. [F]ind parts
-    2. [M]ass change quantity
+    2. [M]ass enter sales
     3. [N]ew Part
     4. [I]nventory""")
             choice = input('?')
@@ -29,11 +30,11 @@ class pcCLI:
                 self.partMenu(myPart)
 
             elif choice in ['2', 'm']:
-                self.massQtyChange()
+                self.massQtyChange('sell')
             elif choice in ['3', 'n']:
                 self.updatePartFlow()
             elif choice in ['4', 'i']:
-                print('inventory not implemented yet')  # TODO
+                self.invMenu()
 
     def partMenu(self, part):
         showPart = True
@@ -55,18 +56,20 @@ class pcCLI:
             if choice in ['', '4', 'b']:
                 return
             elif choice in ['1', 'l']:
-                parts = self.db.selectParts(crossref=part['crossref'])
-                self.showSearch(parts)
+                if part['crossref']:
+                    parts = self.db.selectParts(crossref=part['crossref'])
+                    self.showSearch(parts)
+                else:
+                    print(colored("There are no linked parts.", 'yellow'))
                 showPart = False
             elif choice in ['2', 's']:
-                self.sellQty(part)
+                self.sellQty(part, type='sell')
             elif choice in ['3', 'e']:
                 r = self.editPartMenu(part)
                 if r:  # something got returned
                     part = r
 
     def editPartMenu(self, part):
-
         while True:
             print(
                 """======= EDIT MENU =======
@@ -85,7 +88,31 @@ class pcCLI:
                 self.updatePartFlow(part)
                 return
             elif choice in ['3', 'd']:
-                print('delete not implemented yet')  # TODO
+                i = input('Type this exactly: [{}]?'.format(colored('Please Delete Me', 'red')))
+                if i == 'Please Delete Me':
+                    self.db.deletePart(part['id'])
+                else:
+                    print("It didn't match exactly. Capitals are important, too.")
+
+    def invMenu(self, part):
+        while True:
+            print(
+                """======= INVENTORY MENU =======
+    1. [R]eceive new parts
+    2. [A]udit inventory
+    3. [H]istory of sales
+    4. [B]ack to previous menu""")
+            choice = input('?')
+
+            choice = choice[:1].lower()
+            if choice in ['', '4', 'b']:
+                return
+            elif choice in ['1', 'r']:
+                self.massQtyChange('receive')
+            elif choice in ['2', 'a']:
+                print('audit not implemented yet')  # TODO
+            elif choice in ['3', 'h']:
+                print('history not implemented yet')  # TODO
 
     def findParts(self):
         toSearch = input('{:>14}?'.format('Search for'))
@@ -176,7 +203,7 @@ class pcCLI:
             # action = 'insert'
             self.db.insertPart(partDict=data)
 
-    def sellQty(self, part, notes=None):
+    def sellQty(self, part, notes=None, type=''):
         while True:
             qty = input('{:>14}?'.format('Qty'))
 
@@ -187,20 +214,23 @@ class pcCLI:
                 qty = int(qty)
                 if notes is None:
                     notes = input('{:>14}?'.format('Notes'))
-                self.db.changeQty(part['id'], -qty, notes)
+                if type == 'sell':
+                    qty = -qty
+                self.db.changeQty(part['id'], qty, notes)
 
                 return
 
             except:
                 "Invalid quantity"
 
-    def massQtyChange(self):
+    def massQtyChange(self, type):
         print(colored('Press [Enter] to return to main menu.', 'yellow'))
         while True:
             myPart = self.findParts()
             if myPart is None:
                 return
-            self.sellQty(myPart, 'mass')
+            self.showPart(myPart)
+            self.sellQty(myPart, 'mass', type)
 
     def linkPart(self, part):
         if part['crossref']:
@@ -223,7 +253,12 @@ class pcCLI:
                 if i.lower()[:1] == 'y':
                     self.db.updatePart(part['id'], {'crossref': part2['crossref']})
             else:
-                # part2 is not linked; create new crossref  # TODO
+                # part2 is not linked; create new crossref
+                print('These parts are not linked. What would you like the new name to be?')
+                i = input('{:>14}?'.format('New Name'))
+                crossrefID = self.db.newCrossef(i)
+                self.db.updatePart(part['id'], {'crossref': crossrefID})
+                self.db.updatePart(part2['id'], {'crossref': crossrefID})
                 pass
 
         return self.db.selectParts(id=part['id'])

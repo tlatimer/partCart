@@ -55,7 +55,7 @@ class pcDB:
 
         else:
             # how did you get here?
-            raise theRoof
+            raise theRoof  # TODO: we got here...
 
     def insertPart(self, partDict):
         cols = ', '.join(partDict.keys())
