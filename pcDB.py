@@ -79,8 +79,10 @@ class pcDB:
         self.c.execute(query, args)
         self.conn.commit()
 
-    def deletePart(self, id):  # TODO
-        pass
+    def deletePart(self, id):
+        query = "DELETE FROM parts WHERE id = ?"
+        self.c.execute(query, (id,))
+        self.conn.commit()
 
     def changeQty(self, id, change, notes=''):
         argDict = {

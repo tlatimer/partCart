@@ -223,7 +223,7 @@ class pcCLI:
                 if i.lower()[:1] == 'y':
                     self.db.updatePart(part['id'], {'crossref': part2['crossref']})
             else:
-                # part2 is not linked; create new crossref
+                # part2 is not linked; create new crossref  # TODO
                 pass
 
         return self.db.selectParts(id=part['id'])
