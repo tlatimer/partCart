@@ -63,7 +63,7 @@ class pcCLI:
                     print(colored("There are no linked parts.", 'yellow'))
                 showPart = False
             elif choice in ['2', 's']:
-                self.sellQty(part, type='sell')
+                part = self.sellQty(part, type='sell')
             elif choice in ['3', 'e']:
                 r = self.editPartMenu(part)
                 if r:  # something got returned
@@ -91,10 +91,11 @@ class pcCLI:
                 i = input('Type this exactly: [{}]?'.format(colored('Please Delete Me', 'red')))
                 if i == 'Please Delete Me':
                     self.db.deletePart(part['id'])
+                    return
                 else:
                     print("It didn't match exactly. Capitals are important, too.")
 
-    def invMenu(self, part):
+    def invMenu(self):
         while True:
             print(
                 """======= INVENTORY MENU =======
@@ -110,7 +111,7 @@ class pcCLI:
             elif choice in ['1', 'r']:
                 self.massQtyChange('receive')
             elif choice in ['2', 'a']:
-                print('audit not implemented yet')  # TODO
+                self.doAudit()
             elif choice in ['3', 'h']:
                 print('history not implemented yet')  # TODO
 
@@ -141,7 +142,8 @@ class pcCLI:
             print(message)
             return rows[0]
         else:
-            i = input("No parts found. Would you like to add a part with barcode '%s' [y/N]?" % toSearch)
+            q = "No parts found. Would you like to add a part with barcode '%s' [y/N]?" % toSearch
+            i = input(colored(q, 'yellow'))
             if i.lower()[:1] == 'y':
                 self.updatePartFlow({'barcode': toSearch})
 
@@ -214,10 +216,11 @@ class pcCLI:
                 qty = int(qty)
                 if notes is None:
                     notes = input('{:>14}?'.format('Notes'))
+
                 if type == 'sell':
                     qty = -qty
-                self.db.changeQty(part['id'], qty, notes)
 
+                self.db.changeQty(part['id'], qty, notes)
                 return
 
             except:
@@ -262,6 +265,39 @@ class pcCLI:
                 pass
 
         return self.db.selectParts(id=part['id'])
+
+    def doAudit(self):
+        print(colored('Press [Enter] to return to main menu.', 'yellow'))
+        while True:
+            myPart = self.findParts()
+            if myPart is None:
+                return
+            self.showPart(myPart)
+
+
+            try:
+                qty = int(input('{:>14}?'.format('Current Qty')))
+            except:
+                print(colored('Invalid number!', 'yellow'))
+                continue
+            if myPart['qty']:
+                # qty is already set
+                if qty != myPart['qty']:
+                    toPrint = 'Database current qty is {}'.format(myPart['qty'])
+                    print(colored(toPrint, 'yellow'))
+
+                    try:
+                        i = int(input('{:>14}?'.format('Re-Enter Qty')))
+                    except:
+                        print(colored('Invalid number!', 'yellow'))
+                        continue
+
+                    if i == qty:
+                        self.db.changeQty(myPart['id'], qty - myPart['qty'], 'Audit')
+                        print('Qty updated.')
+            else:
+                # no qty set yet
+                self.db.changeQty(myPart['id'], qty, 'Audit - Initial Qty')
 
 p = pcCLI()
 p.mainMenu()
