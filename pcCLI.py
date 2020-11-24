@@ -101,7 +101,6 @@ class pcCLI:
                 """======= INVENTORY MENU =======
     1. [R]eceive new parts
     2. [A]udit inventory
-    3. [H]istory of sales
     4. [B]ack to previous menu""")
             choice = input('?')
 
