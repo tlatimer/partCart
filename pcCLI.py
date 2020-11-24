@@ -37,13 +37,7 @@ class pcCLI:
                 self.invMenu()
 
     def partMenu(self, part):
-        showPart = True
         while True:
-            if showPart:
-                self.showPart(part)
-            else:
-                showPart = True
-
             print(
                 """======= PART MENU =======
     1. See [L]inked parts
@@ -57,11 +51,9 @@ class pcCLI:
                 return
             elif choice in ['1', 'l']:
                 if part['crossref']:
-                    parts = self.db.selectParts(crossref=part['crossref'])
-                    self.showSearch(parts)
+                    self.findParts(crossref=part['crossref'])
                 else:
                     print(colored("There are no linked parts.", 'yellow'))
-                showPart = False
             elif choice in ['2', 's']:
                 part = self.sellQty(part, type='sell')
             elif choice in ['3', 'e']:
@@ -114,13 +106,17 @@ class pcCLI:
             elif choice in ['3', 'h']:
                 print('history not implemented yet')  # TODO
 
-    def findParts(self):
-        toSearch = input('{:>14}?'.format('Search for'))
+    def findParts(self, crossref=None):
+        if not crossref:
+            toSearch = input('{:>14}?'.format('Search for'))
 
-        if not toSearch:
-            return None
+            if not toSearch:
+                return None
 
-        rows = self.db.selectParts(search=toSearch)
+            rows = self.db.selectParts(search=toSearch)
+        else:
+            rows = self.db.selectParts(crossref=crossref)
+            toSearch = ''
 
         if len(rows) > 1:
             choices = self.showSearch(rows, toSearch)
@@ -256,7 +252,7 @@ class pcCLI:
                     self.db.updatePart(part['id'], {'crossref': part2['crossref']})
             else:
                 # part2 is not linked; create new crossref
-                print('These parts are not linked. What would you like the new name to be?')
+                print('These parts are not linked. What would you like the new CrossRef name to be?')
                 i = input('{:>14}?'.format('New Name'))
                 crossrefID = self.db.newCrossef(i)
                 self.db.updatePart(part['id'], {'crossref': crossrefID})
