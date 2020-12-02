@@ -37,6 +37,7 @@ class pcCLI:
                 self.invMenu()
 
     def partMenu(self, part):
+        self.showPart(part)
         while True:
             print(
                 """======= PART MENU =======
