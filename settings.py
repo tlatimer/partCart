@@ -1,15 +1,20 @@
+dbfname = 'partCart2.db'
+
 displayNames = {
+    # bins
     'desc': 'Description',
+    'loc': 'Location',
+    'sellprice': 'Sell Price',
+
+    # crossrefs
     'vendor': 'Vendor',
     'partnum': 'Part Num',
-    'location': 'Location',
     'barcode': 'Barcode',
-    'sellprice': 'Sell Price',
     'cost': 'Cost',
-    'notes': 'Notes',
+
+    # qtychanges
     'qty': 'Qty',
-    'name': 'CrossRef',
-    'timestamp': 'Last Sold',
+    'lastsold': 'Last Sold',
 }
 
 allPartCols = list(displayNames.keys())
@@ -36,10 +41,11 @@ searchCols = [
 ]
 
 colsToSearch = [
-                'desc',
-                'partnum',
-                'name',
-                'location',
+    'desc',
+    'loc',
+    'partnum',
+    'barcode',
+
 ]
 
-findPartsHeader = ['[#]'] + [displayNames[i] for i in searchCols]
+# findPartsHeader = ['[#]'] + [displayNames[i] for i in searchCols]
