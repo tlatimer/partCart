@@ -14,6 +14,9 @@ def printYLW(text):
 def prompt(text):
     return input('{:>14}?'.format(text)).strip().upper()
 
+def printAligned(left, right):
+    print('{:>14}:{}'.format(left, right))
+
 
 class pcCLI:
     def __init__(self):
@@ -54,7 +57,6 @@ class pcCLI:
             if part['bin'] != prevbin:
                 table.append([''] * len(s.searchDisplayCols))
 
-
             i += 1
             choices[i] = part
 
@@ -74,7 +76,7 @@ class pcCLI:
                     continue
 
                 if col in s.colsToSearch and searchTerm:
-                    toAdd = toAdd.replace(searchTerm, colored(searchTerm, 'magenta'))
+                    toAdd = toAdd.replace(searchTerm, colored(searchTerm, 'cyan'))
 
                 partRow.append(toAdd)
 
@@ -93,6 +95,21 @@ class pcCLI:
             except:
                 print('Invalid choice! try again.')
 
+    def showPart(self, part):
+        data = self.db.selectByExact(part['bin'], 'bins.id')
+
+        cols = ['vendor', 'partnum', 'barcode', 'cost']
+        table = []
+        for row in data:
+            table.append([row[col] for col in cols])
+
+        print('CrossRefs for this part:')
+        headers = [s.displayNames[col] for col in cols]
+        print(tabulate(table, headers=headers, tablefmt='pretty'))
+
+        cols=['desc', 'loc', 'sellprice', 'qty', 'lastsold']
+        for c in cols:
+            printAligned(s.displayNames[c], part[c])
 
 
 
@@ -103,4 +120,5 @@ class pcCLI:
 p = pcCLI()
 while True:
     i = prompt('Search for')
-    p.search(i)
+    part = p.search(i)
+    p.showPart(part)

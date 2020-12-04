@@ -31,7 +31,7 @@ class pcDB:
         where {}
         
         group by crossrefs.id
-        order by lastsold desc, bins.id desc
+        order by lastsold desc, bins.id desc, crossrefs.id
         """
         query = query.format(where_clause)
 
