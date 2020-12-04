@@ -2,7 +2,7 @@ import sqlite3
 import settings as s
 
 class pcDB:
-    def __init__(self, filename=s.dbfname):
+    def __init__(self, filename):
         self.conn = sqlite3.connect(filename)
         self.conn.row_factory = sqlite3.Row
         self.c = self.conn.cursor()
@@ -38,23 +38,11 @@ class pcDB:
 
         return self.c.execute(query, search_vals).fetchall()
 
-    def selectByExact(self, search_for):
-        r = self.doSelect('barcode = ?', search_for)
-        if len(r) > 0:
-            return['barcode', r]
-
-        r = self.doSelect('partnum = ?', search_for)
-        if len(r) > 0:
-            return['partnum', r]
-
-        return None
+    def selectByExact(self, search_for, column):
+        where_clause = '{} = ?'.format(column)
+        return self.doSelect(where_clause, search_for)
 
     def selectByLike(self, search_for):
-        where_clause = ' OR '.join(['%s LIKE ?' % i for i in s.colsToSearch])
+        where_clause = ' OR '.join(['{} LIKE ?'.format(i) for i in s.colsToSearch])
         search_vals = ['%{}%'.format(search_for)] * len(s.colsToSearch)
-
-        r = self.doSelect(where_clause, search_vals)
-        if len(r) > 0:
-            return['like', r]
-        else:
-            return None
+        return self.doSelect(where_clause, search_vals)

@@ -45,7 +45,6 @@ colsToSearch = [
     'loc',
     'partnum',
     'barcode',
-
 ]
 
 # findPartsHeader = ['[#]'] + [displayNames[i] for i in searchCols]

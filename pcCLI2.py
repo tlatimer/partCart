@@ -8,7 +8,7 @@ os.system('color')
 
 class pcCLI:
     def __init__(self):
-        self.db = pcDB2.pcDB()
+        self.db = pcDB2.pcDB(s.dbfname)
 
     def mainMenu(self):
         while True:
