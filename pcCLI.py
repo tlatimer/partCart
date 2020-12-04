@@ -159,7 +159,7 @@ class pcCLI:
             i += 1
             toReturn[i] = part
             partRow = ['{}:'.format(i)]
-            for col in s.searchCols:
+            for col in s.searchDisplayCols:
                 toAdd = str(part[col])
                 if toAdd == 'None':
                     partRow.append('')

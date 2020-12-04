@@ -23,7 +23,7 @@ class pcCLI:
         i = self.db.selectByExact(term, 'barcode')
         j = self.db.selectByExact(term, 'partnum')
 
-        if len(i+j) == 1 or i == j:
+        if len(i+j) == 1 or len(i+j) == 2 and i == j:
             if i:  # is barcode
                 printYLW('Found one part by BARCODE')
                 return i[0]
@@ -35,6 +35,9 @@ class pcCLI:
 
         if len(allresults) > 1:
             return self.chooseResult(allresults, term)
+        elif len(allresults) == 1:
+            printYLW('Found one part by SEARCH')
+            return allresults[0]
         else:  # no results found
             printYLW('No parts found, would you like to add a part with this barcode [y/N]?')
             i = input('?')
@@ -46,36 +49,44 @@ class pcCLI:
         choices = {}
         table = []
         prevbin = allresults[0]['bin']
+
         for i, part in enumerate(allresults):
             if part['bin'] != prevbin:
-                table.append([''] * len(s.searchCols))
-            prevbin = part['bin']
+                table.append([''] * len(s.searchDisplayCols))
+
 
             i += 1
             choices[i] = part
 
             partRow = ['{}:'.format(i)]
-            for col in s.searchCols:
+            for col in s.searchDisplayCols:
+                if part['bin'] == prevbin and col in s.binDispCols and i != 1:
+                    partRow.append('"')
+                    continue
+
                 if col == '||':
                     partRow.append('||')
                     continue
+
                 toAdd = str(part[col]).upper()
-                if toAdd == 'None':
+                if toAdd == 'NONE':
                     partRow.append('')
                     continue
+
                 if col in s.colsToSearch and searchTerm:
                     toAdd = toAdd.replace(searchTerm, colored(searchTerm, 'magenta'))
+
                 partRow.append(toAdd)
+
             table.append(partRow)
+            prevbin = part['bin']
 
         print(tabulate(table, headers=s.findPartsHeader, tablefmt='pretty'))
 
         while True:
             choice = prompt('Which Part [#]')
             try:
-                if choice.lower() == 'f':
-                    return self.search()
-                elif choice == '':
+                if choice in ['', 'F']:
                     return None
                 else:
                     return choices[int(choice)]

@@ -28,14 +28,9 @@ colsToSearch = [
     'barcode',
 ]
 
-searchCols = [
-    'vendor',
-    'partnum',
-    '||',
-    'desc',
-    'loc',
-    'qty',
-    'lastsold',
-]
+crossRefDispCols = ['vendor', 'partnum']
+binDispCols = ['desc', 'loc', 'qty', 'lastsold']
 
-findPartsHeader = ['[#]'] + [displayNames[i] for i in searchCols]
+searchDisplayCols = crossRefDispCols + ['||'] + binDispCols
+
+findPartsHeader = ['[#]'] + [displayNames[i] for i in searchDisplayCols]
