@@ -84,7 +84,13 @@ class pcCLI:
             prevbin = part['bin']
 
         os.system('cls')
-        print(tabulate(table, headers=s.findPartsHeader, tablefmt='pretty'))
+        toPrint = tabulate(table, headers=s.findPartsHeader, tablefmt='pretty')
+        print(toPrint)
+
+        if len(table) > 20:
+            toPrint = toPrint.splitlines()
+            for i in [1,2]:
+                print(toPrint[i])
 
         while True:
             choice = prompt('Which Part [#]')
@@ -109,11 +115,9 @@ class pcCLI:
         headers = [s.displayNames[col] for col in cols]
         print(tabulate(table, headers=headers, tablefmt='pretty'))
 
-        cols=['desc', 'loc', 'sellprice', 'qty', 'lastsold']
+        cols = ['desc', 'loc', 'sellprice', 'qty', 'lastsold']
         for c in cols:
             printAligned(s.displayNames[c], part[c])
-
-
 
     def updatePart(self, prevdata=dict()):  # TODO gonna be hard because of two tables
         pass
