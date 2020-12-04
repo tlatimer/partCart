@@ -83,6 +83,7 @@ class pcCLI:
             table.append(partRow)
             prevbin = part['bin']
 
+        os.system('cls')
         print(tabulate(table, headers=s.findPartsHeader, tablefmt='pretty'))
 
         while True:
@@ -103,6 +104,7 @@ class pcCLI:
         for row in data:
             table.append([row[col] for col in cols])
 
+        os.system('cls')
         print('CrossRefs for this part:')
         headers = [s.displayNames[col] for col in cols]
         print(tabulate(table, headers=headers, tablefmt='pretty'))
