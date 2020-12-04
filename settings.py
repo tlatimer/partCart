@@ -15,30 +15,11 @@ displayNames = {
     # qtychanges
     'qty': 'Qty',
     'lastsold': 'Last Sold',
+
+    '||': '||',
 }
 
-allPartCols = list(displayNames.keys())
-
-updateCols = {
-    'desc': 'Description',
-    'vendor': 'Vendor',
-    'partnum': 'Part Num',
-    'location': 'Location',
-    'barcode': 'Barcode',
-    'sellprice': 'Sell Price',
-    'cost': 'Cost',
-    'notes': 'Notes',
-}
-
-searchCols = [
-    'desc',
-    'vendor',
-    'partnum',
-    'name',
-    'location',
-    'qty',
-    'timestamp',
-]
+# allPartCols = list(displayNames.keys())
 
 colsToSearch = [
     'desc',
@@ -47,4 +28,14 @@ colsToSearch = [
     'barcode',
 ]
 
-# findPartsHeader = ['[#]'] + [displayNames[i] for i in searchCols]
+searchCols = [
+    'vendor',
+    'partnum',
+    '||',
+    'desc',
+    'loc',
+    'qty',
+    'lastsold',
+]
+
+findPartsHeader = ['[#]'] + [displayNames[i] for i in searchCols]

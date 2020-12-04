@@ -27,9 +27,11 @@ class pcDB:
         from bins
         inner join crossrefs on bins.id = crossrefs.bin
         left outer join qtychanges on bins.id = qtychanges.bin
+        
         where {}
+        
         group by crossrefs.id
-        order by bins.id
+        order by lastsold desc, bins.id desc
         """
         query = query.format(where_clause)
 
