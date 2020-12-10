@@ -14,6 +14,7 @@ def printYLW(text):
 def prompt(text):
     return input('{:>14}?'.format(text)).strip().upper()
 
+
 def printAligned(left, right):
     print('{:>14}:{}'.format(left, right))
 
