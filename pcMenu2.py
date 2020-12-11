@@ -26,7 +26,7 @@ class pcMenu2:
                 self.partMenu(myPart)
 
             elif choice in ['2', 'm']:
-                self.massQtyChange('sell')
+                self.cli.massQtyChange('sell')
             elif choice in ['3', 'n']:
                 self.updatePartFlow()
             elif choice in ['4', 'i']:
