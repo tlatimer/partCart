@@ -48,3 +48,11 @@ class pcDB:
         where_clause = ' OR '.join(['{} LIKE ?'.format(i) for i in s.colsToSearch])
         search_vals = ['%{}%'.format(search_for)] * len(s.colsToSearch)
         return self.doSelect(where_clause, search_vals)
+
+    def changeQty(self, id, change):
+        argDict = {
+            'bin': id,
+            'qtychange': change,
+            'timestamp': "datetime('now')"
+        }
+        self.doInsert('qtyChanges', argDict)

@@ -23,7 +23,10 @@ class pcCLI:
     def __init__(self):
         self.db = pcDB2.pcDB(s.dbfname)
 
-    def search(self, term):
+    def search(self, term=None):
+        if not term:
+            term = prompt('Search for')
+
         i = self.db.selectByExact(term, 'barcode')
         j = self.db.selectByExact(term, 'partnum')
 
@@ -97,7 +100,7 @@ class pcCLI:
             choice = prompt('Which Part [#]')
             try:
                 if choice in ['', 'F']:
-                    return None
+                    return
                 else:
                     return choices[int(choice)]
             except:
@@ -123,6 +126,31 @@ class pcCLI:
     def updatePart(self, prevdata=dict()):  # TODO gonna be hard because of two tables
         pass
 
+    def massQtyChange(self, changeType):
+        printYLW('Press [Enter] to return to main menu.')
+        while True:
+            myPart = self.search()
+            if myPart is None:
+                return
+            self.showPart(myPart)
+            self.changeQty(myPart, changeType)
+
+    def changeQty(self, part, changeType):
+        qty = prompt('Qty')
+        if qty == '':
+            return
+
+        try:
+            qty = int(qty)
+        except:
+            printYLW('Invalid Qty!')
+            return
+
+        if changeType == 'sell':
+            qty = -qty
+
+        self.db.changeQty(part['id'], qty)
+        return
 
 p = pcCLI()
 while True:

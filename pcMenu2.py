@@ -20,7 +20,7 @@ class pcMenu2:
 
             choice = choice[:1].lower()
             if choice in ['1', 'f']:
-                myPart = self.findParts()
+                myPart = self.cli.search()
                 if myPart is None:
                     continue
                 self.partMenu(myPart)
