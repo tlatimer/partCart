@@ -152,8 +152,8 @@ class pcCLI:
         self.db.changeQty(part['id'], qty)
         return
 
-p = pcCLI()
-while True:
-    i = prompt('Search for')
-    part = p.search(i)
-    p.showPart(part)
+# p = pcCLI()
+# while True:
+#     i = prompt('Search for')
+#     part = p.search(i)
+#     p.showPart(part)

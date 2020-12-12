@@ -33,7 +33,7 @@ class pcMenu2:
                 self.invMenu()
 
     def partMenu(self, part):
-        self.showPart(part)
+        self.cli.showPart(part)
         while True:
             print(
                 """======= PART MENU =======
