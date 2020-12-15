@@ -136,21 +136,25 @@ class pcCLI:
             self.changeQty(myPart, changeType)
 
     def changeQty(self, part, changeType):
-        qty = prompt('Qty')
-        if qty == '':
-            return
+        while True:
+            qty = prompt('Qty')
 
-        try:
-            qty = int(qty)
-        except:
-            printYLW('Invalid Qty!')
-            return
+            if qty == '':
+                return
+            try:
+                qty = int(qty)
+                break
+            except:
+                printYLW('Invalid Qty!')
 
         if changeType == 'sell':
             qty = -qty
 
         self.db.changeQty(part['id'], qty)
         return
+
+    def addCrossRef(self, part):  # TODO
+        pass
 
 # p = pcCLI()
 # while True:

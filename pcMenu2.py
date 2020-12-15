@@ -66,7 +66,7 @@ class pcMenu2:
             if choice in ['', '4', 'b']:
                 return
             elif choice in ['1', 'c']:
-                return self.linkPart(part)
+                return self.cli.addCrossRef(part)
             elif choice in ['2', 'e']:
                 self.updatePartFlow(part)
                 return
@@ -86,12 +86,12 @@ class pcMenu2:
     2. [A]udit inventory
     4. [B]ack to previous menu""")
             choice = input('?')
-
             choice = choice[:1].lower()
+
             if choice in ['', '4', 'b']:
                 return
             elif choice in ['1', 'r']:
-                self.massQtyChange('receive')
+                self.cli.massQtyChange('receive')
             elif choice in ['2', 'a']:
                 self.doAudit()
             elif choice in ['3', 'h']:

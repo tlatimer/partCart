@@ -15,6 +15,24 @@ class pcDB:
         self.c.execute(query, list(data.values()))
         self.conn.commit()
 
+    def doUpdate(self, table, dataDict, id):
+        if 'id' in dataDict:
+            del(dataDict['id'])
+
+        setCols = []
+        for k in dataDict.keys():
+            setCols.append('{} = ?'.format(k))
+
+        query = 'UPDATE {} SET ' + ', '.join(setCols) + ' WHERE id = ?'
+        query.format(table)
+
+        args = list(dataDict.values()) + [id]
+
+        self.c.execute(query, args)
+        self.conn.commit()
+
+
+
     def doSelect(self, where_clause, search_vals):
         query = """
         select 
@@ -53,6 +71,18 @@ class pcDB:
         argDict = {
             'bin': id,
             'qtychange': change,
-            'timestamp': "datetime('now')"
+            'timestamp': "datetime('now')"  # TODO gonna have to do this in raw SQL
         }
         self.doInsert('qtyChanges', argDict)
+
+    def deleteBin(self, id):  # TODO low
+        pass
+
+    def deleteCrossRef(self, id):  # TODO low
+        pass
+
+    def updateOrInsert(self, table, data):
+        if 'id' in data:
+            self.doUpdate(table, data, data['id'])
+        else:
+            self.doInsert(table, data)
