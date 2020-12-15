@@ -17,8 +17,8 @@ class pcMenu2:
     3. [N]ew Part
     4. [I]nventory""")
             choice = input('?')
-
             choice = choice[:1].lower()
+
             if choice in ['1', 'f']:
                 myPart = self.cli.search()
                 if myPart is None:
@@ -46,7 +46,7 @@ class pcMenu2:
             if choice in ['', '4', 'b']:
                 return
             elif choice in ['2', 's']:
-                part = self.sellQty(part, type='sell')
+                part = self.cli.changeQty(part, changeType='sell')
             elif choice in ['3', 'e']:
                 r = self.editPartMenu(part)
                 if r:  # something got returned
@@ -56,13 +56,13 @@ class pcMenu2:
         while True:
             print(
                 """======= EDIT MENU =======
-    1. Link part to [C]rossref
+    1. Add [C]rossref
     2. [E]dit part fields
     3. [D]elete part
     4. [B]ack to previous menu""")
             choice = input('?')
-
             choice = choice[:1].lower()
+
             if choice in ['', '4', 'b']:
                 return
             elif choice in ['1', 'c']:
