@@ -28,7 +28,7 @@ class pcMenu2:
             elif choice in ['2', 'm']:
                 self.cli.massQtyChange('sell')
             elif choice in ['3', 'n']:
-                self.updatePartFlow()
+                self.newMenu()
             elif choice in ['4', 'i']:
                 self.invMenu()
 
@@ -97,5 +97,27 @@ class pcMenu2:
             elif choice in ['3', 'h']:
                 print('history not implemented yet')  # TODO
 
+    def newMenu(self):
+        print(
+            """======= NEW PART MENU =======
+1. Add [C]rossRef to existing part bin
+2. [N]ew part bin
+4. [B]ack to previous menu""")
+        choice = input('?')
+        choice = choice[:1].lower()
+
+        if choice in ['', '4', 'b']:
+            return
+        elif choice in ['1', 'c']:
+            self.cli.addCrossRef()
+        elif choice in ['2', 'n']:
+            self.doAudit()
+
+# while True:
+#     try:
 p = pcMenu2()
 p.mainMenu()
+#     except:
+#         pcCLI2.printYLW('ERROR: PROGRAM CRASHED. WRITE DOWN WHAT YOU DID JUST NOW TO TELL TOM.\n'
+#                         'PRESS ENTER TO RESTART PROGRAM')
+#         input()

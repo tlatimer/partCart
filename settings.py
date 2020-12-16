@@ -1,4 +1,4 @@
-dbfname = 'partCart2.db'
+db_fname = 'partCart2.db'
 
 displayNames = {
     # bins
@@ -21,12 +21,10 @@ displayNames = {
 
 # allPartCols = list(displayNames.keys())
 
-colsToSearch = [
-    'desc',
-    'loc',
-    'partnum',
-    'barcode',
-]
+all_bin_cols = ['desc', 'loc', 'sellprice']
+all_crossref_cols = ['vendor', 'partnum', 'barcode', 'cost']
+
+colsToSearch = ['desc', 'loc', 'partnum', 'barcode']
 
 crossRefDispCols = ['vendor', 'partnum']
 binDispCols = ['desc', 'loc', 'qty', 'lastsold']

@@ -21,7 +21,7 @@ def printAligned(left, right):
 
 class pcCLI:
     def __init__(self):
-        self.db = pcDB2.pcDB(s.dbfname)
+        self.db = pcDB2.pcDB(s.db_fname)
 
     def search(self, term=None):
         if not term:
@@ -137,7 +137,7 @@ class pcCLI:
 
     def changeQty(self, part, changeType):
         while True:
-            qty = prompt('Qty')
+            qty = prompt(f'\nQty to {changeType}')
 
             if qty == '':
                 return
@@ -153,8 +153,21 @@ class pcCLI:
         self.db.changeQty(part['id'], qty)
         return
 
-    def addCrossRef(self, part):  # TODO
-        pass
+    def addCrossRef(self, part=None):
+        if not part:
+            part = self.search()
+            asdf = part.keys()
+            if not part:
+                return
+
+        to_insert = {'bin': part['bin']}
+        for i in s.all_crossref_cols:
+            to_insert[i] = prompt(s.displayNames[i])
+
+        self.db.doInsert('crossrefs', to_insert)
+
+
+
 
 # p = pcCLI()
 # while True:
