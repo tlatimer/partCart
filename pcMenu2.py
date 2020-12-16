@@ -84,6 +84,7 @@ class pcMenu2:
 
     def invMenu(self):
         while True:
+            os.system('cls')
             print(
                 """
 ======= INVENTORY MENU =======
@@ -126,6 +127,6 @@ while True:
         p = pcMenu2()
         p.mainMenu()
     except:
-        pcCLI2.printYLW('ERROR: PROGRAM CRASHED. WRITE DOWN WHAT YOU DID JUST NOW TO TELL TOM. 715-6827\n'
+        pcCLI2.printYLW('ERROR: PROGRAM CRASHED. WRITE DOWN WHAT YOU JUST DID TO TELL TOM. 715-6827\n'
                         '  PRESS ENTER TO RESTART PROGRAM')
         input()

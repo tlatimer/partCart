@@ -120,7 +120,10 @@ class pcCLI:
 
         cols = ['desc', 'loc', 'sellprice', 'qty', 'lastsold']
         for c in cols:
-            printAligned(s.displayNames[c], part[c])
+            to_print = part[c]
+            if not to_print:
+                to_print = ''
+            printAligned(s.displayNames[c], to_print)
 
     def updatePart(self, prevdata=dict()):  # TODO gonna be hard because of two tables
         pass
@@ -165,14 +168,14 @@ class pcCLI:
         self.db.doInsert('crossrefs', to_insert)
 
     def newBin(self):
-        print('Please enter data for the BIN of parts')
+        printYLW('Please enter data for the BIN of parts')
         bin_data = dict()
         for i in s.all_bin_cols:
             bin_data[i] = prompt(s.displayNames[i])
 
         bin_id = self.db.doInsert('bins', bin_data)
 
-        print('Now, Please enter data for the initial CrossRef')
+        printYLW('Now, Please enter data for the initial CrossRef')
         first_crossref = {'bin': bin_id}
         for i in s.all_crossref_cols:
             first_crossref[i] = prompt(s.displayNames[i])
