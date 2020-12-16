@@ -156,7 +156,6 @@ class pcCLI:
     def addCrossRef(self, part=None):
         if not part:
             part = self.search()
-            asdf = part.keys()
             if not part:
                 return
 
@@ -166,7 +165,20 @@ class pcCLI:
 
         self.db.doInsert('crossrefs', to_insert)
 
+    def newBin(self):
+        print('Please enter data for the BIN of parts')
+        bin_data = dict()
+        for i in s.all_bin_cols:
+            bin_data[i] = prompt(s.displayNames[i])
 
+        bin_id = self.db.doInsert('bins', bin_data)
+
+        print('Now, Please enter data for the initial CrossRef')
+        first_crossref = {'bin': bin_id}
+        for i in s.all_crossref_cols:
+            first_crossref[i] = prompt(s.displayNames[i])
+
+        self.db.doInsert('crossrefs', first_crossref)
 
 
 # p = pcCLI()

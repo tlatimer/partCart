@@ -33,8 +33,9 @@ class pcMenu2:
                 self.invMenu()
 
     def partMenu(self, part):
-        self.cli.showPart(part)
         while True:
+            os.system('cls')
+            self.cli.showPart(part)
             print(
                 """======= PART MENU =======
     2. [S]ell quantity
@@ -111,7 +112,7 @@ class pcMenu2:
         elif choice in ['1', 'c']:
             self.cli.addCrossRef()
         elif choice in ['2', 'n']:
-            self.doAudit()
+            self.cli.newBin()
 
 # while True:
 #     try:
