@@ -14,6 +14,7 @@ class pcDB:
 
         self.c.execute(query, list(data.values()))
         self.conn.commit()
+        return self.c.lastrowid
 
     def doUpdate(self, table, dataDict, id):
         if 'id' in dataDict:
