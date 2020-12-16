@@ -120,11 +120,12 @@ class pcMenu2:
             elif choice in ['2', 'n']:
                 self.cli.newBin()
 
-# while True:
-#     try:
-p = pcMenu2()
-p.mainMenu()
-#     except:
-#         pcCLI2.printYLW('ERROR: PROGRAM CRASHED. WRITE DOWN WHAT YOU DID JUST NOW TO TELL TOM.\n'
-#                         'PRESS ENTER TO RESTART PROGRAM')
-#         input()
+
+while True:
+    try:
+        p = pcMenu2()
+        p.mainMenu()
+    except:
+        pcCLI2.printYLW('ERROR: PROGRAM CRASHED. WRITE DOWN WHAT YOU DID JUST NOW TO TELL TOM. 715-6827\n'
+                        '  PRESS ENTER TO RESTART PROGRAM')
+        input()
