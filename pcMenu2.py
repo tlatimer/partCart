@@ -72,8 +72,8 @@ class pcMenu2:
             elif choice in ['1', 'c']:
                 return self.cli.addCrossRef(part)
             elif choice in ['2', 'e']:
-                self.updatePartFlow(part)
-                return
+                pcCLI2.printYLW('Editing part fields isnt supported yet')  # TODO
+                # self.updatePartFlow(part)
             elif choice in ['3', 'd']:
                 i = input('Type this exactly: [{}]?'.format(colored('Please Delete Me', 'red')))
                 if i == 'Please Delete Me':
@@ -127,6 +127,7 @@ while True:
         p = pcMenu2()
         p.mainMenu()
     except:
+        raise
         pcCLI2.printYLW('ERROR: PROGRAM CRASHED. WRITE DOWN WHAT YOU JUST DID TO TELL TOM. 715-6827\n'
                         '  PRESS ENTER TO RESTART PROGRAM')
         input()

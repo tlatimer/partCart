@@ -46,10 +46,10 @@ class pcCLI:
             printYLW('Found one part by SEARCH')
             return allresults[0]
         else:  # no results found
-            printYLW('No parts found, would you like to add a part with this barcode [y/N]?')
+            printYLW('No results, would you like to add a new part bin with this barcode [y/N]?')
             i = input('?')
-            if i[:-1].lower() == 'y':
-                self.updatePart({'barcode': term})
+            if i == 'y':
+                self.newBin()
                 return  # TODO not sure what to return here, if anything
 
     def chooseResult(self, allresults, searchTerm):
@@ -126,9 +126,6 @@ class pcCLI:
                 to_print = ''
             printAligned(s.displayNames[c], to_print)
 
-    def updatePart(self, prevdata=dict()):  # TODO gonna be hard because of two tables
-        pass
-
     def massQtyChange(self, changeType):
         printYLW('Press [Enter] to return to main menu.')
         while True:
@@ -153,8 +150,8 @@ class pcCLI:
         if changeType == 'sell':
             qty = -qty
 
-        self.db.changeQty(part['id'], qty)
-        return
+        self.db.changeQty(part['bin'], qty)
+        return self.db.selectByExact(part['bin'], 'bins.id')[0]
 
     def addCrossRef(self, part=None):
         if not part:
@@ -182,6 +179,9 @@ class pcCLI:
             first_crossref[i] = prompt(s.displayNames[i])
 
         self.db.doInsert('crossrefs', first_crossref)
+
+        printYLW('Now, Please enter the initial Qty')
+        self.changeQty({'bin': bin_id}, 'start')
 
 
 # p = pcCLI()
