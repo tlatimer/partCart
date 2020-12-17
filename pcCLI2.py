@@ -87,6 +87,7 @@ class pcCLI:
             table.append(partRow)
             prevbin = part['bin']
 
+        # actually print out the table
         os.system('cls')
         toPrint = tabulate(table, headers=s.findPartsHeader, tablefmt='pretty')
         print(toPrint)
