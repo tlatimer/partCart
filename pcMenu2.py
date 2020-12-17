@@ -10,6 +10,7 @@ class pcMenu2:
 
     def mainMenu(self):
         while True:
+            os.system('cls')
             print("""
 ======= MAIN MENU =======       
     1. [F]ind parts
@@ -37,7 +38,8 @@ class pcMenu2:
             os.system('cls')
             self.cli.showPart(part)
             print(
-                """======= PART MENU =======
+                """
+======= PART MENU =======
     2. [S]ell quantity
     3. [E]dit part
     4. [B]ack to Main Menu""")
@@ -56,10 +58,11 @@ class pcMenu2:
     def editPartMenu(self, part):
         while True:
             print(
-                """======= EDIT MENU =======
+                """
+======= EDIT MENU =======
     1. Add [C]rossref
     2. [E]dit part fields
-    3. [D]elete part
+    3. [D]elete part bin
     4. [B]ack to previous menu""")
             choice = input('?')
             choice = choice[:1].lower()
@@ -74,15 +77,17 @@ class pcMenu2:
             elif choice in ['3', 'd']:
                 i = input('Type this exactly: [{}]?'.format(colored('Please Delete Me', 'red')))
                 if i == 'Please Delete Me':
-                    self.db.deletePart(part['id'])
+                    self.db.deletePart(part['id'])  # TODO
                     return
                 else:
                     print("It didn't match exactly. Capitals are important, too.")
 
     def invMenu(self):
         while True:
+            os.system('cls')
             print(
-                """======= INVENTORY MENU =======
+                """
+======= INVENTORY MENU =======
     1. [R]eceive new parts
     2. [A]udit inventory
     4. [B]ack to previous menu""")
@@ -99,26 +104,29 @@ class pcMenu2:
                 print('history not implemented yet')  # TODO
 
     def newMenu(self):
-        print(
-            """======= NEW PART MENU =======
-1. Add [C]rossRef to existing part bin
-2. [N]ew part bin
-4. [B]ack to previous menu""")
-        choice = input('?')
-        choice = choice[:1].lower()
+        while True:
+            print(
+                """
+======= NEW PART MENU =======
+    1. Add [C]rossRef to existing part bin
+    2. [N]ew part bin
+    4. [B]ack to previous menu""")
+            choice = input('?')
+            choice = choice[:1].lower()
 
-        if choice in ['', '4', 'b']:
-            return
-        elif choice in ['1', 'c']:
-            self.cli.addCrossRef()
-        elif choice in ['2', 'n']:
-            self.cli.newBin()
+            if choice in ['', '4', 'b']:
+                return
+            elif choice in ['1', 'c']:
+                self.cli.addCrossRef()
+            elif choice in ['2', 'n']:
+                self.cli.newBin()
 
-# while True:
-#     try:
-p = pcMenu2()
-p.mainMenu()
-#     except:
-#         pcCLI2.printYLW('ERROR: PROGRAM CRASHED. WRITE DOWN WHAT YOU DID JUST NOW TO TELL TOM.\n'
-#                         'PRESS ENTER TO RESTART PROGRAM')
-#         input()
+
+while True:
+    try:
+        p = pcMenu2()
+        p.mainMenu()
+    except:
+        pcCLI2.printYLW('ERROR: PROGRAM CRASHED. WRITE DOWN WHAT YOU JUST DID TO TELL TOM. 715-6827\n'
+                        '  PRESS ENTER TO RESTART PROGRAM')
+        input()
