@@ -35,7 +35,6 @@ class pcMenu2:
 
     def partMenu(self, part):
         while True:
-            os.system('cls')
             self.cli.showPart(part)
             print(
                 """

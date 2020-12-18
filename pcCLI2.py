@@ -23,11 +23,9 @@ class pcCLI:
     def __init__(self):
         self.db = pcDB2.pcDB(s.db_fname)
 
-    def search(self, term=None):
-        if not term:
-            term = prompt('Search for')
-            if not term:
-                return
+    def search(self):
+        os.system('cls')
+        term = prompt('Search for')
 
         i = self.db.selectByExact(term, 'barcode')
         j = self.db.selectByExact(term, 'partnum')
@@ -43,7 +41,9 @@ class pcCLI:
         allresults = i + j + self.db.selectByLike(term)
 
         if len(allresults) > 1:
-            return self.chooseResult(allresults, term)
+            to_return = self.chooseResult(allresults, term)
+            os.system('cls')
+            return to_return
         elif len(allresults) == 1:
             printYLW('Found one part by SEARCH')
             return allresults[0]
@@ -91,7 +91,6 @@ class pcCLI:
             prevbin = part['bin']
 
         # actually print out the table
-        os.system('cls')
         toPrint = tabulate(table, headers=s.findPartsHeader, tablefmt='pretty')
         print(toPrint)
 
@@ -118,7 +117,7 @@ class pcCLI:
         for row in data:
             table.append([row[col] for col in cols])
 
-        print('CrossRefs for this part:')
+        print(colored('CrossRefs for this part:', 'cyan'))
         headers = [s.displayNames[col] for col in cols]
         print(tabulate(table, headers=headers, tablefmt='pretty'))
 
