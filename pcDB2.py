@@ -8,6 +8,9 @@ class pcDB:
         self.c = self.conn.cursor()
 
     def doInsert(self, table, data):
+        if not ''.join([i for i in data.values() if type(i) == str]):
+            # it's blank!  # TODO
+            return
         cols = ', '.join(data.keys())
         qmarks = ', '.join(['?'] * len(data))
         query = 'INSERT INTO {} ({}) VALUES ({})'.format(table, cols, qmarks)

@@ -163,9 +163,10 @@ class pcCLI:
             part = self.search()
             if not part:
                 return
+            self.showPart(part)
 
-        self.showPart(part)
         to_insert = {'bin': part['bin']}
+        printYLW('Enter data for new CrossRef:')
         for i in s.all_crossref_cols:
             to_insert[i] = prompt(s.displayNames[i])
 
