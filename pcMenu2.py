@@ -88,7 +88,7 @@ class pcMenu2:
             print(
                 """
 ======= INVENTORY MENU =======
-    1. [R]eceive new parts
+    1. [R]eceive new part shipment
     2. [A]udit inventory
     4. [B]ack to previous menu""")
             choice = input('?')
@@ -99,7 +99,8 @@ class pcMenu2:
             elif choice in ['1', 'r']:
                 self.cli.massQtyChange('receive')
             elif choice in ['2', 'a']:
-                self.doAudit()
+                pcCLI2.printYLW('Auditing isnt supported yet')  # TODO
+                # self.doAudit()
             elif choice in ['3', 'h']:
                 print('history not implemented yet')  # TODO
 

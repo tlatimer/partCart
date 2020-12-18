@@ -26,6 +26,8 @@ class pcCLI:
     def search(self, term=None):
         if not term:
             term = prompt('Search for')
+            if not term:
+                return
 
         i = self.db.selectByExact(term, 'barcode')
         j = self.db.selectByExact(term, 'partnum')
@@ -46,11 +48,12 @@ class pcCLI:
             printYLW('Found one part by SEARCH')
             return allresults[0]
         else:  # no results found
-            printYLW('No results, would you like to add a new part bin with this barcode [y/N]?')
-            i = input('?')
+            printYLW('No results, would you like to add a new part bin with this barcode?')
+            i = prompt('[y/N]')
             if i == 'y':
-                self.newBin()
-                return  # TODO not sure what to return here, if anything
+                return self.newBin()
+            else:
+                return self.search()
 
     def chooseResult(self, allresults, searchTerm):
         choices = {}
@@ -129,9 +132,11 @@ class pcCLI:
     def massQtyChange(self, changeType):
         printYLW('Press [Enter] to return to main menu.')
         while True:
+            os.system('cls')
             myPart = self.search()
             if myPart is None:
                 return
+            os.system('cls')
             self.showPart(myPart)
             self.changeQty(myPart, changeType)
 
@@ -159,6 +164,7 @@ class pcCLI:
             if not part:
                 return
 
+        self.showPart(part)
         to_insert = {'bin': part['bin']}
         for i in s.all_crossref_cols:
             to_insert[i] = prompt(s.displayNames[i])
@@ -182,6 +188,8 @@ class pcCLI:
 
         printYLW('Now, Please enter the initial Qty')
         self.changeQty({'bin': bin_id}, 'start')
+
+        return self.db.selectByExact(bin_id, 'bins.id')[0]
 
 
 # p = pcCLI()
