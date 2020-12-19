@@ -12,7 +12,7 @@ def printYLW(text):
 
 
 def prompt(text):
-    return input('{:>14}?'.format(text)).strip().upper()
+    return input('{:>20}?'.format(text)).strip().upper()
 
 
 def printAligned(left, right):
@@ -26,11 +26,15 @@ class pcCLI:
     def search(self):
         os.system('cls')
         term = prompt('Search for')
+        if not term:
+            return
 
         i = self.db.selectByExact(term, 'barcode')
         j = self.db.selectByExact(term, 'partnum')
 
-        if len(i+j) == 1 or len(i+j) == 2 and i == j:
+        bins = [x['bin'] for x in i+j]
+
+        if len(set(bins)) == 1:
             if i:  # is barcode
                 printYLW('Found one part by BARCODE')
                 return i[0]
@@ -38,7 +42,7 @@ class pcCLI:
                 printYLW('Found one part by PART NUM')
                 return j[0]
 
-        allresults = i + j + self.db.selectByLike(term)
+        allresults = self.db.selectByLike(term)
 
         if len(allresults) > 1:
             to_return = self.chooseResult(allresults, term)
@@ -48,9 +52,8 @@ class pcCLI:
             printYLW('Found one part by SEARCH')
             return allresults[0]
         else:  # no results found
-            printYLW('No results, would you like to add a new part bin with this barcode?')
-            i = prompt('[y/N]')
-            if i == 'y':
+            printYLW('No results, would you like to add a new part?')
+            if prompt('[y/N]') == 'y':
                 return self.newBin()
             else:
                 return self.search()
@@ -172,7 +175,7 @@ class pcCLI:
         self.db.doInsert('crossrefs', to_insert)
 
     def newBin(self):
-        printYLW('Please enter data for the BIN of parts')
+        printYLW('Please enter data for the PART')
         bin_data = dict()
         for i in s.all_bin_cols:
             bin_data[i] = prompt(s.displayNames[i])
@@ -185,6 +188,13 @@ class pcCLI:
             first_crossref[i] = prompt(s.displayNames[i])
 
         self.db.doInsert('crossrefs', first_crossref)
+
+        while True:
+            printYLW('Would you like to add another CrossRef?')
+            if prompt('[y/N]') == 'y':
+                self.addCrossRef(bin_id)
+            else:
+                break
 
         printYLW('Now, Please enter the initial Qty')
         self.changeQty({'bin': bin_id}, 'start')

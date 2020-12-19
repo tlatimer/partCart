@@ -1,6 +1,7 @@
 import sqlite3
 import settings as s
 
+
 class pcDB:
     def __init__(self, filename):
         self.conn = sqlite3.connect(filename)

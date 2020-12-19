@@ -26,7 +26,7 @@ all_crossref_cols = ['vendor', 'partnum', 'barcode', 'cost']
 
 colsToSearch = ['desc', 'loc', 'partnum', 'barcode']
 
-crossRefDispCols = ['vendor', 'partnum']
+crossRefDispCols = ['vendor', 'partnum', 'barcode']
 binDispCols = ['desc', 'loc', 'qty', 'lastsold']
 
 searchDisplayCols = crossRefDispCols + ['||'] + binDispCols
