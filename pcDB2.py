@@ -76,7 +76,8 @@ class pcDB:
         argDict = {
             'bin': id,
             'qtychange': change,
-            'timestamp': "datetime('now')"  # TODO gonna have to do this in raw SQL
+            # 'timestamp': "datetime('now')"  # TODO gonna have to do this in raw SQL
+            'timestamp': "-"
         }
         self.doInsert('qtyChanges', argDict)
 

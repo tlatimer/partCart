@@ -73,14 +73,14 @@ class pcCLI:
             partRow = ['{}:'.format(i)]
             for col in s.searchDisplayCols:
                 if part['bin'] == prevbin and col in s.binDispCols and i != 1:
-                    partRow.append('"')
+                    partRow.append('-')
                     continue
 
                 if col == '||':
                     partRow.append('||')
                     continue
 
-                toAdd = str(part[col]).upper()
+                toAdd = str(part[col])
                 if toAdd == 'NONE':
                     partRow.append('')
                     continue
