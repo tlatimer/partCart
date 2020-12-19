@@ -18,8 +18,7 @@ class pcMenu2:
     2. [N]ew Part
     3. [M]ass enter sales
     4. [R]eceive new part shipment""")
-            choice = input('?')
-            choice = choice[:1].lower()
+            choice = input('?').lower()
 
             if choice in ['1', 'f']:
                 myPart = self.cli.search()
@@ -43,8 +42,7 @@ class pcMenu2:
     2. [S]ell quantity
     3. [E]dit part
     4. [B]ack to Main Menu""")
-            choice = input('?')
-            choice = choice[:1].lower()
+            choice = input('?').lower()
 
             if choice in ['', '4', 'b']:
                 return
@@ -64,8 +62,7 @@ class pcMenu2:
     2. [E]dit part fields
     3. [D]elete part 
     4. [B]ack to previous menu""")
-            choice = input('?')
-            choice = choice[:1].lower()
+            choice = input('?').lower()
 
             if choice in ['', '4', 'b']:
                 return
@@ -75,12 +72,13 @@ class pcMenu2:
                 pcCLI2.printYLW('Editing part fields isnt supported yet')  # TODO
                 # self.updatePartFlow(part)
             elif choice in ['3', 'd']:
-                i = input('Type this exactly: [{}]?'.format(colored('Please Delete Me', 'red')))
-                if i == 'Please Delete Me':
-                    self.db.deletePart(part['id'])  # TODO
-                    return
-                else:
-                    print("It didn't match exactly. Capitals are important, too.")
+                pcCLI2.printYLW('Deleting parts isnt supported yet')  # TODO
+                # i = input('Type this exactly: [{}]?'.format(colored('Please Delete Me', 'red')))
+                # if i == 'Please Delete Me':
+                #     self.db.deletePart(part['id'])  # TODO
+                #     return
+                # else:
+                #     print("It didn't match exactly. Capitals are important, too.")
 
     def newMenu(self):
         while True:
@@ -90,8 +88,7 @@ class pcMenu2:
     1. [N]ew part
     2. [A]dd crossref to existing part
     4. [B]ack to previous menu""")
-            choice = input('?')
-            choice = choice[:1].lower()
+            choice = input('?').lower()
 
             if choice in ['', '4', 'b']:
                 return
@@ -106,7 +103,7 @@ while True:
         p = pcMenu2()
         p.mainMenu()
     except:
-        # raise
+        raise
         pcCLI2.printYLW('ERROR: PROGRAM CRASHED. WRITE DOWN WHAT YOU JUST DID TO TELL TOM. 715-6827\n'
                         '  PRESS ENTER TO RESTART PROGRAM')
         input()

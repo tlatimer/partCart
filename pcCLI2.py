@@ -53,7 +53,7 @@ class pcCLI:
             return allresults[0]
         else:  # no results found
             printYLW('No results, would you like to add a new part?')
-            if prompt('[y/N]') == 'y':
+            if prompt('[y/N]') == 'Y':
                 return self.newBin()
             else:
                 return self.search()
@@ -191,8 +191,9 @@ class pcCLI:
 
         while True:
             printYLW('Would you like to add another CrossRef?')
-            if prompt('[y/N]') == 'y':
-                self.addCrossRef(bin_id)
+            if prompt('[y/N]') == 'Y':
+                cur_part = self.db.selectByExact(bin_id, 'bins.id')[0]
+                self.addCrossRef(cur_part)
             else:
                 break
 
