@@ -144,7 +144,7 @@ class pcCLI:
 
     def changeQty(self, part, changeType):
         while True:
-            qty = prompt(f'\nQty to {changeType}')
+            qty = prompt(f'Qty to {changeType}')
 
             if qty == '':
                 return

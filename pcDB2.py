@@ -10,7 +10,7 @@ class pcDB:
 
     def doInsert(self, table, data):
         if not ''.join([i for i in data.values() if type(i) == str]):
-            # it's blank!  # TODO
+            print('No data entered! No changes made to database.')
             return
         cols = ', '.join(data.keys())
         qmarks = ', '.join(['?'] * len(data))
@@ -35,8 +35,6 @@ class pcDB:
 
         self.c.execute(query, args)
         self.conn.commit()
-
-
 
     def doSelect(self, where_clause, search_vals):
         query = """

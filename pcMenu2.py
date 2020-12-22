@@ -48,10 +48,12 @@ class pcMenu2:
                 return
             elif choice in ['2', 's']:
                 part = self.cli.changeQty(part, changeType='sell')
+                os.system('cls')
             elif choice in ['3', 'e']:
                 r = self.editPartMenu(part)
                 if r:  # something got returned
                     part = r
+                os.system('cls')
 
     def editPartMenu(self, part):
         while True:
@@ -103,7 +105,7 @@ while True:
         p = pcMenu2()
         p.mainMenu()
     except:
-        raise
+        # raise
         pcCLI2.printYLW('ERROR: PROGRAM CRASHED. WRITE DOWN WHAT YOU JUST DID TO TELL TOM. 715-6827\n'
                         '  PRESS ENTER TO RESTART PROGRAM')
         input()
