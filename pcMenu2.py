@@ -51,7 +51,9 @@ class pcMenu2:
                 os.system('cls')
             elif choice in ['3', 'e']:
                 r = self.editPartMenu(part)
-                if r:  # something got returned
+                if r == 'deleted':
+                    return
+                elif r:  # something got returned
                     part = r
                 os.system('cls')
 
@@ -71,16 +73,14 @@ class pcMenu2:
             elif choice in ['1', 'a']:
                 return self.cli.addCrossRef(part)
             elif choice in ['2', 'e']:
-                pcCLI2.printYLW('Editing part fields isnt supported yet')  # TODO
-                # self.updatePartFlow(part)
+                return self.cli.editBin(part)
             elif choice in ['3', 'd']:
-                pcCLI2.printYLW('Deleting parts isnt supported yet')  # TODO
-                # i = input('Type this exactly: [{}]?'.format(colored('Please Delete Me', 'red')))
-                # if i == 'Please Delete Me':
-                #     self.db.deletePart(part['id'])  # TODO
-                #     return
-                # else:
-                #     print("It didn't match exactly. Capitals are important, too.")
+                i = input('Type this exactly: [{}]?'.format(colored('Please Delete Me', 'red')))
+                if i == 'Please Delete Me':
+                    self.cli.delBin(part)
+                    return 'deleted'
+                else:
+                    print("It didn't match exactly. Capitals are important, too.")
 
     def newMenu(self):
         while True:
@@ -105,7 +105,7 @@ while True:
         p = pcMenu2()
         p.mainMenu()
     except:
-        # raise
+        raise
         pcCLI2.printYLW('ERROR: PROGRAM CRASHED. WRITE DOWN WHAT YOU JUST DID TO TELL TOM. 715-6827\n'
                         '  PRESS ENTER TO RESTART PROGRAM')
         input()

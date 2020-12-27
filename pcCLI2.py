@@ -16,7 +16,7 @@ def prompt(text):
 
 
 def printAligned(left, right):
-    print('{:>14}:{}'.format(left, right))
+    print('{:>20}:{}'.format(left, right))
 
 
 class pcCLI:
@@ -201,6 +201,23 @@ class pcCLI:
         self.changeQty({'bin': bin_id}, 'start')
 
         return self.db.selectByExact(bin_id, 'bins.id')[0]
+
+    def editBin(self, part):
+        new_data = {'id': part['bin']}
+        for i in s.all_bin_cols:
+            printAligned(s.displayNames[i], part[i])
+            p = prompt(s.displayNames[i])
+            if p:
+                new_data[i] = p
+
+        if len(new_data) > 1:
+            self.db.updateOrInsert('bins', new_data)
+
+        return self.db.selectByExact(part['bin'], 'bins.id')[0]
+
+    def delBin(self, part):
+        self.db.deleteBin(part['bin'])
+
 
 
 # p = pcCLI()

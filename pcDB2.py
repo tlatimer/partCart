@@ -29,7 +29,7 @@ class pcDB:
             setCols.append('{} = ?'.format(k))
 
         query = 'UPDATE {} SET ' + ', '.join(setCols) + ' WHERE id = ?'
-        query.format(table)
+        query = query.format(table)
 
         args = list(dataDict.values()) + [id]
 
@@ -79,10 +79,15 @@ class pcDB:
         }
         self.doInsert('qtyChanges', argDict)
 
-    def deleteBin(self, id):  # TODO low
-        pass
+    def deleteBin(self, bin_id):
+        query = "delete from crossrefs where bin = ?"
+        self.c.execute(query, (bin_id,))
 
-    def deleteCrossRef(self, id):  # TODO low
+        query = "delete from bins where id = ?"
+        self.c.execute(query, (bin_id,))
+        self.conn.commit()
+
+    def deleteCrossRef(self, bin_id):  # TODO low
         pass
 
     def updateOrInsert(self, table, data):
