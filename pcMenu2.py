@@ -110,7 +110,7 @@ while True:
         p = pcMenu2()
         p.mainMenu()
     except:
-        raise
+        # raise
         pcCLI2.printYLW('ERROR: PROGRAM CRASHED. WRITE DOWN WHAT YOU JUST DID TO TELL TOM. 715-6827\n'
                         '  PRESS ENTER TO RESTART PROGRAM')
         input()
