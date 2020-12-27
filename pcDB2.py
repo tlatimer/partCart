@@ -87,8 +87,10 @@ class pcDB:
         self.c.execute(query, (bin_id,))
         self.conn.commit()
 
-    def deleteCrossRef(self, bin_id):  # TODO low
-        pass
+    def deleteCrossRef(self, crossref_id):  # TODO low
+        query = "delete from crossrefs where id = ?"
+        self.c.execute(query, (crossref_id,))
+        self.conn.commit()
 
     def updateOrInsert(self, table, data):
         if 'id' in data:

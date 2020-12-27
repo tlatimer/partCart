@@ -47,7 +47,9 @@ class pcMenu2:
             if choice in ['', '4', 'b']:
                 return
             elif choice in ['2', 's']:
-                part = self.cli.changeQty(part, changeType='sell')
+                r = self.cli.changeQty(part, changeType='sell')
+                if r:
+                    part = r
                 os.system('cls')
             elif choice in ['3', 'e']:
                 r = self.editPartMenu(part)
@@ -63,18 +65,21 @@ class pcMenu2:
                 """
 ======= EDIT MENU =======
     1. [A]dd crossref
-    2. [E]dit part fields
-    3. [D]elete part 
-    4. [B]ack to previous menu""")
+    2. [R]emove crossref
+    3. [E]dit part fields
+    4. [D]elete part 
+    5. [B]ack to previous menu""")
             choice = input('?').lower()
 
-            if choice in ['', '4', 'b']:
+            if choice in ['', '5', 'b']:
                 return
             elif choice in ['1', 'a']:
                 return self.cli.addCrossRef(part)
-            elif choice in ['2', 'e']:
+            elif choice in ['2', 'r']:
+                return self.cli.delCrossRef(part)
+            elif choice in ['3', 'e']:
                 return self.cli.editBin(part)
-            elif choice in ['3', 'd']:
+            elif choice in ['4', 'd']:
                 i = input('Type this exactly: [{}]?'.format(colored('Please Delete Me', 'red')))
                 if i == 'Please Delete Me':
                     self.cli.delBin(part)

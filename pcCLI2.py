@@ -36,10 +36,10 @@ class pcCLI:
 
         if len(set(bins)) == 1:
             if i:  # is barcode
-                printYLW('Found one part by BARCODE')
+                printYLW('Found one crossref by BARCODE')
                 return i[0]
             else:
-                printYLW('Found one part by PART NUM')
+                printYLW('Found one crossref by PART NUM')
                 return j[0]
 
         allresults = self.db.selectByLike(term)
@@ -49,10 +49,10 @@ class pcCLI:
             os.system('cls')
             return to_return
         elif len(allresults) == 1:
-            printYLW('Found one part by SEARCH')
+            printYLW('Found one crossref by SEARCH')
             return allresults[0]
         else:  # no results found
-            printYLW('No results, would you like to add a new part?')
+            printYLW('No results, would you like to add a new crossref?')
             if prompt('[y/N]') == 'Y':
                 return self.newBin()
             else:
@@ -120,7 +120,7 @@ class pcCLI:
         for row in data:
             table.append([row[col] for col in cols])
 
-        print(colored('CrossRefs for this part:', 'cyan'))
+        print(colored('CrossRefs for this crossref:', 'cyan'))
         headers = [s.displayNames[col] for col in cols]
         print(tabulate(table, headers=headers, tablefmt='pretty'))
 
@@ -218,10 +218,46 @@ class pcCLI:
     def delBin(self, part):
         self.db.deleteBin(part['bin'])
 
+    def delCrossRef(self, part):
+        allresults = self.db.selectByExact(part['bin'], 'bins.id')
+        choices = {}
+        table = []
+        cols = ['vendor', 'partnum', 'barcode', 'cost']
 
+        for i, crossref in enumerate(allresults):
+            i += 1
+            choices[i] = crossref[4]
+
+            part_row = ['{}:'.format(i)]
+            for col in cols:
+                toAdd = str(crossref[col])
+                if toAdd == 'NONE':
+                    part_row.append('')
+                else:
+                    part_row.append(toAdd)
+
+            table.append(part_row)
+
+        # actually print out the table
+        header = ['[#]'] + [s.displayNames[x] for x in cols]
+        to_print = tabulate(table, headers=header, tablefmt='pretty')
+        print(to_print)
+
+        while True:
+            choice = prompt('Which CrossRef [#]')
+            try:
+                if choice in ['', 'F']:
+                    return
+                else:
+                    to_del = choices[int(choice)]
+                    break
+            except:
+                print('Invalid choice! try again.')
+
+        self.db.deleteCrossRef(to_del)
 
 # p = pcCLI()
 # while True:
 #     i = prompt('Search for')
-#     part = p.search(i)
-#     p.showPart(part)
+#     crossref = p.search(i)
+#     p.showPart(crossref)

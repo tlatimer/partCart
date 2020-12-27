@@ -19,7 +19,7 @@ class pcDB:
             
             FROM parts 
             LEFT OUTER JOIN qtyChanges 
-            ON parts.id = qtyChanges.part
+            ON parts.id = qtyChanges.crossref
             LEFT OUTER JOIN crossref
             on parts.crossref = crossref.id
             WHERE {}
@@ -86,7 +86,7 @@ class pcDB:
 
     def changeQty(self, id, change, notes=''):
         argDict = {
-            'part': id,
+            'crossref': id,
             'qtychange': change,
             'notes': notes,
         }

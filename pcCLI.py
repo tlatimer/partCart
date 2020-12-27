@@ -43,7 +43,7 @@ class pcCLI:
                 """======= PART MENU =======
     1. See [L]inked parts
     2. [S]ell quantity
-    3. [E]dit part
+    3. [E]dit crossref
     4. [B]ack to Main Menu""")
             choice = input('?')
             choice = choice[:1].lower()
@@ -66,9 +66,9 @@ class pcCLI:
         while True:
             print(
                 """======= EDIT MENU =======
-    1. Link part to [C]rossref
-    2. [E]dit part fields
-    3. [D]elete part
+    1. Link crossref to [C]rossref
+    2. [E]dit crossref fields
+    3. [D]elete crossref
     4. [B]ack to previous menu""")
             choice = input('?')
 
@@ -134,11 +134,11 @@ class pcCLI:
                     print('Invalid choice! try again.')
 
         elif len(rows) == 1:
-            message = colored("Only 1 part was found", 'yellow')
+            message = colored("Only 1 crossref was found", 'yellow')
             print(message)
             return rows[0]
         else:
-            q = "No parts found. Would you like to add a part with barcode '%s' [y/N]?" % toSearch
+            q = "No parts found. Would you like to add a crossref with barcode '%s' [y/N]?" % toSearch
             i = input(colored(q, 'yellow'))
             if i.lower()[:1] == 'y':
                 self.updatePartFlow({'barcode': toSearch})
@@ -233,22 +233,22 @@ class pcCLI:
 
     def linkPart(self, part):
         if part['crossref']:
-            # part is already linked
+            # crossref is already linked
             i = input('Would you like to remove this Crossref [y/N]?')
             if i.lower()[:1] == 'y':
                 self.db.updatePart(part['id'], {'crossref': None})
 
         else:
-            # part is not linked
-            print(colored('What part would you like to link it to?', 'yellow'))
+            # crossref is not linked
+            print(colored('What crossref would you like to link it to?', 'yellow'))
             part2 = self.findParts()
             if part2 is None:
                 return
 
             if part2['crossref']:
-                #part2 is linked, copy to part
+                #part2 is linked, copy to crossref
                 self.showPart(part2)
-                i = input('Are you sure you\'d like to link to this part [y/N]?')
+                i = input('Are you sure you\'d like to link to this crossref [y/N]?')
                 if i.lower()[:1] == 'y':
                     self.db.updatePart(part['id'], {'crossref': part2['crossref']})
             else:
