@@ -36,10 +36,10 @@ class pcCLI:
 
         if len(set(bins)) == 1:
             if i:  # is barcode
-                printYLW('Found one crossref by BARCODE')
+                printYLW('Found one part by BARCODE')
                 return i[0]
             else:
-                printYLW('Found one crossref by PART NUM')
+                printYLW('Found one part by PART NUM')
                 return j[0]
 
         allresults = self.db.selectByLike(term)
@@ -49,10 +49,10 @@ class pcCLI:
             os.system('cls')
             return to_return
         elif len(allresults) == 1:
-            printYLW('Found one crossref by SEARCH')
+            printYLW('Found one part by SEARCH')
             return allresults[0]
         else:  # no results found
-            printYLW('No results, would you like to add a new crossref?')
+            printYLW('No results, would you like to add a new part?')
             if prompt('[y/N]') == 'Y':
                 return self.newBin()
             else:
@@ -120,7 +120,7 @@ class pcCLI:
         for row in data:
             table.append([row[col] for col in cols])
 
-        print(colored('CrossRefs for this crossref:', 'cyan'))
+        print(colored('CrossRefs for this part:', 'cyan'))
         headers = [s.displayNames[col] for col in cols]
         print(tabulate(table, headers=headers, tablefmt='pretty'))
 
@@ -259,5 +259,5 @@ class pcCLI:
 # p = pcCLI()
 # while True:
 #     i = prompt('Search for')
-#     crossref = p.search(i)
-#     p.showPart(crossref)
+#     part = p.search(i)
+#     p.showPart(part)
