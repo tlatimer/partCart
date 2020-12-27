@@ -81,7 +81,7 @@ class pcCLI:
                     continue
 
                 toAdd = str(part[col])
-                if toAdd == 'NONE':
+                if toAdd in ['None', 'NONE']:
                     partRow.append('')
                     continue
 
