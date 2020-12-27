@@ -8,12 +8,17 @@ class pcDB:
         self.conn.row_factory = sqlite3.Row
         self.c = self.conn.cursor()
 
-    def doInsert(self, table, data):
-        if not ''.join([i for i in data.values() if type(i) == str]):
+    def doInsert(self, table, data, isQty=False):
+        if not (isQty or ''.join([i for i in data.values() if type(i) == str])):
             print('No data entered! No changes made to database.')
             return
         cols = ', '.join(data.keys())
         qmarks = ', '.join(['?'] * len(data))
+
+        if isQty:
+            cols += ', timestamp'
+            qmarks += ', datetime(\'now\')'
+
         query = 'INSERT INTO {} ({}) VALUES ({})'.format(table, cols, qmarks)
 
         self.c.execute(query, list(data.values()))
@@ -74,10 +79,9 @@ class pcDB:
         argDict = {
             'bin': id,
             'qtychange': change,
-            # 'timestamp': "datetime('now')"  # TODO gonna have to do this in raw SQL
-            'timestamp': "-"
+            # 'timestamp': "datetime('now')"  # gonna have to do this in raw SQL
         }
-        self.doInsert('qtyChanges', argDict)
+        self.doInsert('qtyChanges', argDict, isQty=True)
 
     def deleteBin(self, bin_id):
         query = "delete from crossrefs where bin = ?"

@@ -219,6 +219,30 @@ class pcCLI:
         self.db.deleteBin(part['bin'])
 
     def delCrossRef(self, part):
+        r = self.chooseCrossRef(part)
+        if not r:
+            return
+
+        self.db.deleteCrossRef(r)
+
+    def editCrossRef(self, part):
+        r = self.chooseCrossRef(part)
+        if not r:
+            return
+
+        new_data = {'id': r}
+        for i in s.all_crossref_cols:
+            printAligned(s.displayNames[i], part[i])
+            p = prompt(s.displayNames[i])
+            if p:
+                new_data[i] = p
+
+        if len(new_data) > 1:
+            self.db.updateOrInsert('bins', new_data)
+
+        return self.db.selectByExact(part['bin'], 'bins.id')[0]
+
+    def chooseCrossRef(self, part):
         allresults = self.db.selectByExact(part['bin'], 'bins.id')
         choices = {}
         table = []
@@ -226,7 +250,7 @@ class pcCLI:
 
         for i, crossref in enumerate(allresults):
             i += 1
-            choices[i] = crossref[4]
+            choices[i] = crossref[4]  # hardcoded because duplicate col name 'id'
 
             part_row = ['{}:'.format(i)]
             for col in cols:
@@ -249,12 +273,10 @@ class pcCLI:
                 if choice in ['', 'F']:
                     return
                 else:
-                    to_del = choices[int(choice)]
-                    break
+                    return choices[int(choice)]
             except:
                 print('Invalid choice! try again.')
 
-        self.db.deleteCrossRef(to_del)
 
 # p = pcCLI()
 # while True:
