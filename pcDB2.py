@@ -47,6 +47,7 @@ class pcDB:
         
         bins.*, 
         crossrefs.*, 
+        crossrefs.id as crid,
         sum(qtychange) as qty, 
         max(timestamp) as lastsold 
         

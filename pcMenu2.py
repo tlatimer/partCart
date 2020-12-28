@@ -65,7 +65,7 @@ class pcMenu2:
                 """
 ======= EDIT MENU =======
     1. [A]dd crossref
-    2. edit [C]rossref
+    # 2. edit [C]rossref
     3. [R]emove crossref
     4. [E]dit part fields
     5. [D]elete part 

@@ -223,22 +223,22 @@ class pcCLI:
         if not r:
             return
 
-        self.db.deleteCrossRef(r)
+        self.db.deleteCrossRef(r['crid'])
 
     def editCrossRef(self, part):
         r = self.chooseCrossRef(part)
         if not r:
             return
 
-        new_data = {'id': r}
+        new_data = {'id': r['crid']}
         for i in s.all_crossref_cols:
-            printAligned(s.displayNames[i], part[i])
+            printAligned(s.displayNames[i], r[i])
             p = prompt(s.displayNames[i])
             if p:
                 new_data[i] = p
 
         if len(new_data) > 1:
-            self.db.updateOrInsert('bins', new_data)
+            self.db.updateOrInsert('crossrefs', new_data)
 
         return self.db.selectByExact(part['bin'], 'bins.id')[0]
 
@@ -250,12 +250,12 @@ class pcCLI:
 
         for i, crossref in enumerate(allresults):
             i += 1
-            choices[i] = crossref[4]  # hardcoded because duplicate col name 'id'
+            choices[i] = crossref
 
             part_row = ['{}:'.format(i)]
             for col in cols:
                 toAdd = str(crossref[col])
-                if toAdd == 'NONE':
+                if toAdd in ['None', 'NONE']:
                     part_row.append('')
                 else:
                     part_row.append(toAdd)
